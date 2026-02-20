@@ -1,0 +1,130 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+:root {
+	--bg: #f5f7fb;
+	--card: #ffffff;
+	--text: #0f172a;
+	--muted: #64748b;
+	--primary: #2563eb;
+	--primary-dark: #1d4ed8;
+	--border: #e2e8f0;
+	--shadow: 0 18px 38px rgba(15, 23, 42, 0.08);
+}
+
+body {
+	font-family: "Inter", system-ui, -apple-system, sans-serif;
+	color: var(--text);
+	background: var(--bg) !important;
+}
+
+.rental-form-page .card,
+.confirmation-page .card {
+	border-radius: 18px;
+	border: 1px solid var(--border);
+	box-shadow: var(--shadow) !important;
+}
+
+.rental-form-page h1,
+.confirmation-page h1 {
+	letter-spacing: -0.02em;
+	font-weight: 700;
+}
+
+.rental-form-page .h5,
+.confirmation-page .h5 {
+	font-weight: 600;
+	color: var(--text);
+}
+
+.rental-form-page .form-label {
+	font-weight: 500;
+	margin-bottom: 0.45rem;
+}
+
+.rental-form-page .form-control {
+	border-radius: 10px;
+	border-color: var(--border);
+	padding: 0.7rem 0.85rem;
+}
+
+.rental-form-page .form-control:focus {
+	border-color: var(--primary);
+	box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+}
+
+.rental-form-page textarea.form-control {
+	min-height: 110px;
+	resize: vertical;
+}
+
+.rental-form-page .form-check {
+	padding: 0.75rem 0.9rem 0.75rem 2rem;
+	background: #f8fafc;
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	margin-bottom: 0.75rem;
+}
+
+.rental-form-page .form-check-input,
+.confirmation-page .form-check-input {
+	accent-color: var(--primary);
+}
+
+.rental-form-page .btn-primary {
+	background: var(--primary);
+	border-color: var(--primary);
+	padding: 0.8rem 1rem;
+	font-weight: 600;
+	border-radius: 12px;
+}
+
+.rental-form-page .btn-primary:hover,
+.rental-form-page .btn-primary:focus {
+	background: var(--primary-dark);
+	border-color: var(--primary-dark);
+	box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+}
+
+.confirmation-page .text-muted {
+	color: var(--muted) !important;
+}
+
+.confirmation-page .alert-warning {
+	background: #fef2f2;
+	border-color: #fecaca;
+	color: #991b1b;
+	border-radius: 14px;
+}
+
+.confirmation-page .list-group-item {
+	background: #f8fafc;
+	border-color: var(--border);
+	padding: 0.8rem 0.9rem;
+}
+
+.confirmation-page .btn-outline-primary {
+	border-radius: 12px;
+	font-weight: 600;
+	border-color: var(--primary);
+	color: var(--primary);
+}
+
+.confirmation-page .btn-outline-primary:hover,
+.confirmation-page .btn-outline-primary:focus {
+	background: var(--primary);
+	border-color: var(--primary);
+	color: #fff;
+}
+
+@media (max-width: 600px) {
+	.rental-form-page .container,
+	.confirmation-page .container {
+		padding-top: 1.75rem !important;
+		padding-bottom: 1.75rem !important;
+	}
+
+	.rental-form-page .card-body,
+	.confirmation-page .card-body {
+		padding: 1.25rem !important;
+	}
+}
