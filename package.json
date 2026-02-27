@@ -1,0 +1,30 @@
+{
+  "name": "dumpster-rental",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A website where customers can rent dumpsters",
+  "main": "restore.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arbrown7/dumpster-rental.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arbrown7/dumpster-rental/issues"
+  },
+  "homepage": "https://github.com/arbrown7/dumpster-rental#readme",
+  "dependencies": {
+    "ejs": "^4.0.1",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

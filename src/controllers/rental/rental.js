@@ -7,9 +7,13 @@ const router = Router();
  * Display the rental form page.
  */
 const showRentalForm = (req, res) => {
-    res.render('forms/rental/form', {
+    res.render('rental/form', {
         title: 'Reserve a Dumpster'
     });
+    //** Uncomment this out when we switch to more complex views **
+    // res.render('forms/rental/form', {
+    //     title: 'Reserve a Dumpster'
+    // });
 };
 
 /**
@@ -22,29 +26,59 @@ const handleRentalSubmission = async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        // Store each validation error as a separate flash message
-        errors.array().forEach(error => {
-            req.flash('error', error.msg);
+        console.error('Validation errors:', errors.array());
+        // Best UX: re-render form with errors + previously entered values
+        return res.status(400).render("rental/form", {
+        title: "Reserve a Dumpster",
+        errors: errors.array(),
+        form: req.body
         });
-        return res.redirect('/rental');
     }
 
-    // Extract validated data
-    const { subject, message } = req.body;
+    const rentalInput = {
+        size: req.body.size,
+        name: req.body.name,
+        phone: req.body.phone,
+        organization: req.body.organization,
+        address: req.body.address,
+        placement: req.body.placement,
+        deliveryDate: req.body.deliveryDate,
+        pickupDate: req.body.pickupDate,
+        agreement: req.body.agreement === "on"
+        // userId: req.user?.id ?? null  // later when auth exists
+    };
 
     try {
         // Save to database
-        await createContactForm(subject, message);
+        const createdRental = await createRental(rentalInput);
         // After successfully saving to the database
-        req.flash('success', 'Thank you for reserving a dumpster.');
+        const formatDate = (tsOrString) => {
+            if (!tsOrString) return "";
+            // If Firestore Timestamp:
+            if (typeof tsOrString.toDate === "function") {
+                return tsOrString.toDate().toLocaleDateString("en-US");
+            }
+            // If already string "YYYY-MM-DD":
+            return tsOrString;
+        };
         // Redirect to responses page on success
-        res.redirect('/rental');
+            return res.render("rental/confirmation", {
+                data: {
+                    ...createdRental,
+                    deliveryDate: formatDate(createdRental.deliveryDate),
+                    pickupDate: formatDate(createdRental.pickupDate)
+                }
+            });
     } catch (error) {
         console.error('Error saving contact form:', error);
-        req.flash('error', 'Unable to submit your rental. Please try again later.');
-        res.redirect('/rental');
+        return res.status(500).render("rental/form", {
+            title: "Reserve a Dumpster",
+            errors: [{ msg: "Unable to submit your rental. Please try again later." }],
+            form: req.body
+        });
     }   
 };
+
 
 /**
  * Display current rentals.

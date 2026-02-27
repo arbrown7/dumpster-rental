@@ -6,6 +6,16 @@ import {
     addDoc,
     serverTimestamp
 } from "firebase/firestore";
+import { db } from "../config/firebase.js";
+
+const rentalsCol = collection(db, "rentals");
+
+const toTimestamp = (yyyy_mm_dd) => {
+  // if it's already a Date, keep it
+  if (yyyy_mm_dd instanceof Date) return Timestamp.fromDate(yyyy_mm_dd);
+  // assume "YYYY-MM-DD"
+  return Timestamp.fromDate(new Date(`${yyyy_mm_dd}T00:00:00`));
+};
 
 /**
  * Core function that creates a rental based on user input.
@@ -19,31 +29,38 @@ import {
  * @param {bool} agreement - Customer's agreement to the requirements of the contract
  * @returns {?} - I don't know if this needs to return anything...
  */
-const createRental = async (
-        size,
-		organization,
-		address,
-		placement,
-		deliveryDate,
-		pickupDate,
-		agreement) => {
-
-    //TODO: find dumpster id
-    
-    const docRef = await addDoc(collection(db, "rental"), {
+const createRental = async ({
+  userId = null,
+  size,
+  name,
+  phone,
+  organization = "",
+  address,
+  placement = "",
+  deliveryDate,
+  pickupDate,
+  agreement
+}) => {
+  const payload = {
+    userId,
     size,
+    name,
+    phone,
     organization,
     address,
     placement,
-    deliveryDate,
-    pickupDate,
-    agreement,
-    creationDate: serverTimestamp()
-    });
+    deliveryDate: toTimestamp(deliveryDate),
+    pickupDate: toTimestamp(pickupDate),
+    agreement: !!agreement,
+    status: "pending",
+    paid: false,
+    createdAt: serverTimestamp()
+  };
 
-    console.log("Created document with ID:", docRef.id);
+  const docRef = await addDoc(rentalsCol, payload);
 
-    //TODO: figure out what to return here
+  // Return something your controller can use
+  return { id: docRef.id, ...payload };
 };
 
 

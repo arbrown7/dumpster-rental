@@ -1,5 +1,6 @@
 import { homePage, aboutPage, faqPage } from './index.js';
 import { Router } from 'express';
+import rentalRoutes from './rental/rental.js';
 
 // Create a new router instance
 const router = Router();
