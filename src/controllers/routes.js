@@ -1,6 +1,6 @@
 import { homePage, aboutPage, faqPage } from './index.js';
 import { Router } from 'express';
-import rentalRoutes from './rental/rental.js';
+import { showRentalForm, handleRentalSubmission, rentalValidation } from './rental/rental.js';
 
 // Create a new router instance
 const router = Router();
@@ -11,6 +11,7 @@ router.get('/about', aboutPage);
 router.get('/faq', faqPage);
 
 // Rental form routes
-router.use('/rental', rentalRoutes);
+router.get('/', showRentalForm);
+router.post('/', rentalValidation, handleRentalSubmission);
 
 export default router;

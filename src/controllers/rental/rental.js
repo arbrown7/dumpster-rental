@@ -98,37 +98,21 @@ const showCurrentRentals = async (req, res) => {
     });
 };
 
-/**
- * GET /rental - Display the rental form
- */
-router.get('/', showRentalForm);
+const rentalValidation = [
+    body('name')
+        .trim()
+        .isLength({ min: 2 })
+        .withMessage('Name must be at least 2 characters'),
+    body('phone')
+        .trim(),
+    body('organization')
+        .trim()
+        .isLength({ min: 3 })
+        .withMessage('Organization must be at least 3 characters'),
+    body('address')
+        .trim(),
+    body('placement')
+        .trim()
+]
 
-/**
- * POST /rental - Handle rental form submission with validation
- */
-router.post('/',
-    [
-        body('name')
-            .trim()
-            .isLength({ min: 2 })
-            .withMessage('Name must be at least 2 characters'),
-        body('phone')
-            .trim(),
-        body('organization')
-            .trim()
-            .isLength({ min: 3 })
-            .withMessage('Organization must be at least 3 characters'),
-        body('address')
-            .trim(),
-        body('placement')
-            .trim()
-    ],
-    handleRentalSubmission
-);
-
-/**
- * GET /contact/current - Display all current rentals
- */
-router.get('/current', showCurrentRentals);
-
-export default router;
+export {showCurrentRentals, showRentalForm, handleRentalSubmission}
