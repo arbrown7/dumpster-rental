@@ -1,6 +1,6 @@
 // Route handlers for static pages
 const homePage = (req, res) => {
-    res.render('home', { title: 'Home' });
+  res.render('home', { title: 'Home' });
 };
 
 const aboutPage = (req, res) => {

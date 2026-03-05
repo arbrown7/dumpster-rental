@@ -6,7 +6,8 @@
   "main": "restore.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon --env-file=.env server.js"
   },
   "repository": {
     "type": "git",
@@ -20,10 +21,13 @@
   },
   "homepage": "https://github.com/arbrown7/dumpster-rental#readme",
   "dependencies": {
+    "bootstrap": "^5.3.8",
+    "dotenv": "^17.3.1",
     "ejs": "^4.0.1",
     "express": "^5.2.1",
     "express-validator": "^7.3.1",
-    "firebase": "^12.10.0"
+    "firebase": "^12.10.0",
+    "ws": "^8.19.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

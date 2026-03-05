@@ -7,7 +7,7 @@ import {
     findCurrent,
     findHistory,
     updateStatus
-} from '../../models/rental/rental';
+} from '../../models/rental/rental.js'; 
 
 const router = Router();
 
@@ -119,4 +119,4 @@ const rentalValidation = [
         .trim()
 ]
 
-export {showCurrentRentals, showRentalForm, handleRentalSubmission}
+export {showCurrentRentals, showRentalForm, handleRentalSubmission, rentalValidation}

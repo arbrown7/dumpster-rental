@@ -11,7 +11,7 @@ router.get('/about', aboutPage);
 router.get('/faq', faqPage);
 
 // Rental form routes
-router.get('/', showRentalForm);
-router.post('/', rentalValidation, handleRentalSubmission);
+router.get('/rental', showRentalForm);
+router.post('/rental', rentalValidation, handleRentalSubmission);
 
 export default router;

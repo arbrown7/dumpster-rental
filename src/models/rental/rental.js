@@ -6,7 +6,7 @@ import {
     addDoc,
     serverTimestamp
 } from "firebase/firestore";
-import { db } from "../config/firebase.js";
+import { db } from "../../config/firebase.js";
 
 const rentalsCol = collection(db, "rentals");
 
