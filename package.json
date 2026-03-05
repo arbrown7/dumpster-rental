@@ -2,7 +2,8 @@
   "dependencies": {
     "bootstrap": "^5.3.8",
     "ejs": "^3.1.10",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "firebase": "^12.10.0"
   },
   "overrides": {
     "minimatch": "^10.2.1"
