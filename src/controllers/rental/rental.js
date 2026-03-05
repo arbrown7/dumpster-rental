@@ -1,5 +1,13 @@
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
+import {
+    createRental,
+    findByUserId,
+    findById,
+    findCurrent,
+    findHistory,
+    updateStatus
+} from '../../models/rental/rental';
 
 const router = Router();
 
@@ -10,10 +18,6 @@ const showRentalForm = (req, res) => {
     res.render('rental/form', {
         title: 'Reserve a Dumpster'
     });
-    //** Uncomment this out when we switch to more complex views **
-    // res.render('forms/rental/form', {
-    //     title: 'Reserve a Dumpster'
-    // });
 };
 
 /**
