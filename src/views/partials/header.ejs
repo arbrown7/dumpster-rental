@@ -1,0 +1,91 @@
+<!-- This is all just temporary until Anna commits her navigation -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <%- renderStyles() %>
+        <%- renderScripts() %>
+            <% if (NODE_ENV.includes('dev')) { %>
+                <script>
+                    // Get the current hostname and port from the browser
+                    const host = window.location.hostname;
+                    const currentPort = window.location.port;
+
+                    // Calculate WebSocket port (current port + 1)
+                    const wsPort = currentPort ? (parseInt(currentPort) + 1) : 3001;
+
+                    // Create WebSocket connection using dynamic hostname and port
+                    const ws = new WebSocket(`ws://${host}:${wsPort}`);
+                    ws.onclose = () => {
+                        setTimeout(() => location.reload(), 2000);
+                    };
+                </script>
+                <% } %>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Draper City</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/rental">Rent a Dumpster</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/faq">FAQ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">About</a>
+                    </li>
+                    <!-- Only visible when NOT logged in -->
+                    <% if (!isLoggedIn) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register">Register</a>
+                        </li>
+                        <% } %>
+                            <!-- Only visible when logged in -->
+                            <% if (isLoggedIn) { %>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/dashboard">My Rentals</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/logout">Logout</a>
+                                </li>
+                                <% } %>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <% const messages=flash(); const hasMessages=Object.values(messages).some(arr=> arr.length > 0);
+        %>
+
+        <% if (hasMessages) { %>
+            <div class="flash-messages">
+                <% Object.keys(messages).forEach(type=> { %>
+                    <% messages[type].forEach(message=> { %>
+                        <div class="flash <%= type %>">
+                            <%= message %>
+                        </div>
+                        <% }); %>
+                            <% }); %>
+            </div>
+            <% } %>

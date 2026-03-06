@@ -6,6 +6,9 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# macOS
+.DS_Store
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
@@ -70,6 +73,10 @@ web_modules/
 .env.*
 !.env.example
 
+# Firebase Admin SDK service account keys
+serviceAccountKey.json
+*firebase-adminsdk-*.json
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache
@@ -124,6 +131,9 @@ dist
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
+
+# Local editor settings (keep project settings out of shared history)
+.vscode/
 
 # yarn v3
 .pnp.*
