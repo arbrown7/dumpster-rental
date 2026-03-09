@@ -31,11 +31,10 @@ const handleRentalSubmission = async (req, res) => {
 
     if (!errors.isEmpty()) {
         console.error('Validation errors:', errors.array());
-        // Best UX: re-render form with errors + previously entered values
-        return res.status(400).render("rental/form", {
-        title: "Reserve a Dumpster",
-        errors: errors.array(),
-        form: req.body
+        return res.status(400).render('rental/form', {
+            title: 'Reserve a Dumpster',
+            errors: errors.array(),
+            form: req.body
         });
     }
 
@@ -66,7 +65,8 @@ const handleRentalSubmission = async (req, res) => {
             return tsOrString;
         };
         // Redirect to responses page on success
-            return res.render("rental/confirmation", {
+            return res.render('rental/confirmation', {
+                title: 'Rental Details Confirmation',
                 data: {
                     ...createdRental,
                     deliveryDate: formatDate(createdRental.deliveryDate),
@@ -76,11 +76,29 @@ const handleRentalSubmission = async (req, res) => {
     } catch (error) {
         console.error('Error saving contact form:', error);
         return res.status(500).render("rental/form", {
-            title: "Reserve a Dumpster",
+            title: 'Reserve a Dumpster',
             errors: [{ msg: "Unable to submit your rental. Please try again later." }],
             form: req.body
         });
     }   
+};
+
+//TODO: add authentication
+const showRentalConfirmation = (req, res, next) => {
+    const rentalId = req.params.id;
+    const rental = findById(rentalId);
+
+    // If rental doesn't exist, create 404 error
+    if (Object.keys(rental).length === 0) {
+        const err = new Error(`Rental "${rentalId}" not found.`);
+        err.status = 404;
+        return next(err);
+    }
+
+    res.render('rental/confirmation', {
+        title: 'Reserve a Dumpster',
+        data: rental
+    });
 };
 
 
@@ -98,10 +116,11 @@ const showCurrentRentals = async (req, res) => {
 
     res.render('rental/current', {
         title: 'Current Rentals',
-        contactForms
+        rentals
     });
 };
 
+//TODO: add phone validation
 const rentalValidation = [
     body('name')
         .trim()
@@ -110,6 +129,7 @@ const rentalValidation = [
     body('phone')
         .trim(),
     body('organization')
+        .optional({ checkFalsy: true })
         .trim()
         .isLength({ min: 3 })
         .withMessage('Organization must be at least 3 characters'),
@@ -119,4 +139,4 @@ const rentalValidation = [
         .trim()
 ]
 
-export {showCurrentRentals, showRentalForm, handleRentalSubmission, rentalValidation}
+export {showCurrentRentals, showRentalForm, handleRentalSubmission, rentalValidation, showRentalConfirmation}

@@ -4,7 +4,8 @@ import {
     where, 
     getDocs, 
     addDoc,
-    serverTimestamp
+    serverTimestamp,
+    Timestamp
 } from "firebase/firestore";
 import { db } from "../../config/firebase.js";
 
@@ -17,6 +18,7 @@ const toTimestamp = (yyyy_mm_dd) => {
   return Timestamp.fromDate(new Date(`${yyyy_mm_dd}T00:00:00`));
 };
 
+//TODO: add rental id sequentially
 /**
  * Core function that creates a rental based on user input.
  * 
