@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import "dotenv/config";
+import session from "express-session";
 
 import router from "./src/controllers/routes.js";
 import { addLocalVariables } from './src/middleware/global.js';
@@ -25,14 +26,21 @@ app.use(
   express.static(path.join(__dirname, "node_modules", "bootstrap", "dist"))
 );
 app.use(express.static(path.join(__dirname, "public")));
+app.use(session({
+    secret: process.env.SESSION_SECRET || "local-dev-session-secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: NODE_ENV === "production"
+    }
+}));
 
 
 /**
  * Global Middleware
  */
-app.use(addLocalVariables);
-
-// Global middleware (sets res.locals variables)
 app.use(addLocalVariables);
 
 // Flash message middleware (must come after session and global middleware)

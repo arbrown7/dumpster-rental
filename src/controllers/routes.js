@@ -1,6 +1,8 @@
 import { homePage, aboutPage, faqPage } from './index.js';
 import { Router } from 'express';
 import { showRentalForm, handleRentalSubmission, rentalValidation } from './rental/rental.js';
+import { showRegisterPage, registerUser, registerValidation } from './auth/register.js';
+import { showLoginPage, loginUser, loginValidation } from './auth/login.js';
 
 // Create a new router instance
 const router = Router();
@@ -9,6 +11,10 @@ const router = Router();
 router.get('/', homePage);
 router.get('/about', aboutPage);
 router.get('/faq', faqPage);
+router.get('/register', showRegisterPage);
+router.post('/register', registerValidation, registerUser);
+router.get('/login', showLoginPage);
+router.post('/login', loginValidation, loginUser);
 
 // Rental form routes
 router.get('/rental', showRentalForm);
