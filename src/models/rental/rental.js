@@ -5,11 +5,14 @@ import {
     getDocs, 
     addDoc,
     serverTimestamp,
-    Timestamp
+    Timestamp,
+    limit
 } from "firebase/firestore";
 import { db } from "../../config/firebase.js";
 
 const rentalsCol = collection(db, "rentals");
+const dumpstersCol = collection(db, "dumpsters");
+const totalDumpstersPerDay = 5;
 
 const toTimestamp = (yyyy_mm_dd) => {
   // if it's already a Date, keep it
@@ -19,18 +22,6 @@ const toTimestamp = (yyyy_mm_dd) => {
 };
 
 //TODO: add rental id sequentially
-/**
- * Core function that creates a rental based on user input.
- * 
- * @param {number} size - Size of dumpster
- * @param {string} organization - HOA or organization associated with rental (if applicable)
- * @param {string} address - Address of rental
- * @param {string} placement - Placement instructions for dumpster
- * @param {date} deliveryDate - Delivery date
- * @param {date} pickupDate - Pickup date
- * @param {bool} agreement - Customer's agreement to the requirements of the contract
- * @returns {?} - I don't know if this needs to return anything...
- */
 const createRental = async ({
   userId = null,
   size,
@@ -51,8 +42,8 @@ const createRental = async ({
     organization,
     address,
     placement,
-    deliveryDate: toTimestamp(deliveryDate),
-    pickupDate: toTimestamp(pickupDate),
+    deliveryDate,
+    pickupDate,
     agreement: !!agreement,
     status: "pending",
     paid: false,
@@ -65,14 +56,6 @@ const createRental = async ({
   return { id: docRef.id, ...payload };
 };
 
-
-/**
- * Finds all current rentals, meaning the current date is 
- * between their delivery and pickup dates AND the rental 
- * has been marked as paid.
- * 
- * @returns {id, name, phone, address, size, placement, deliveryDate, pickupDate, receiptNo, creationDate}
- */
 const findCurrent = async () => {
     let currentDate = Date.now();
     //TODO: figure out how dates will be stored in the database
@@ -80,38 +63,83 @@ const findCurrent = async () => {
     //const q = query(collection(db, "rental"), where())
 };
 
-/**
- * Finds all past rentals, meaning their pickup date has passed.
- * 
- * @returns {?}
- */
 const findHistory = async () => {
 
 };
 
-/**
- * Updates the status of a rental
- * 
- * @param {number} rentalId - rental ID
- * @param {string} status - new status
- * @returns {?}
- */
 const updateStatus = async () => {
 
 };
 
 const findByUserId = async (userId) => {
-    const q = query(collection(db, "rental"), where("userId", "==", userId));
+  const q = query(rentalsCol, where("userId", "==", userId));
 
-    const snapshot = await getDocs(q);
-    return snapshot;
+  const snapshot = await getDocs(q);
+  return snapshot;
 };
 
 const findById = async (rentalId) => {
-    const q = query(collection(db, "rental"), where("id", "==", rentalId));
+  const q = query(rentalsCol, where("id", "==", rentalId));
 
-    const snapshot = await getDocs(q);
-    return snapshot;
+  const snapshot = await getDocs(q);
+  return snapshot;
+};
+
+const checkAvailability = async (size, deliveryDate) => {
+  let currentSizeRentals = 0;
+  let totalRentals = 0;
+  let dumpsterInventory = 0;
+
+  const rentalQ = query(
+    rentalsCol, 
+    where("size", "==", size), 
+    where("deliveryDate", "==", deliveryDate)
+  );
+
+  const dayQ = query(
+    rentalsCol,
+    where("deliveryDate", "==", deliveryDate)
+  );
+
+  const dumpsterQ = query(
+    dumpstersCol,
+    where("size", "==", size),
+    limit(1)
+  );
+
+  try {
+    const snapshot = await getDocs(rentalQ);
+    currentSizeRentals = snapshot.size;
+  } catch (error) {
+    console.error('Error retrieving currentSizeRentals:', error);
+  }
+
+  try {
+    const snapshot = await getDocs(dayQ);
+    totalRentals = snapshot.size;
+  } catch (error) {
+    console.error('Error retrieving totalRentals:', error);
+  }
+
+  try {
+    const snapshot = await getDocs(dumpsterQ);
+    if (!snapshot.empty) {
+      dumpsterInventory = snapshot.docs[0].data().inventory;
+    }
+
+  } catch (error) {
+    console.error('Error retrieving dmupsterInventory:', error);
+  }
+
+  if(currentSizeRentals < dumpsterInventory) {
+    if(totalRentals < totalDumpstersPerDay) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
 };
 
 export {
@@ -120,5 +148,6 @@ export {
     findById,
     findCurrent,
     findHistory,
-    updateStatus
+    updateStatus,
+    checkAvailability
 };

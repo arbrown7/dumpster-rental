@@ -1,4 +1,3 @@
-import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 import {
     createRental,
@@ -6,27 +5,17 @@ import {
     findById,
     findCurrent,
     findHistory,
-    updateStatus
+    updateStatus,
+    checkAvailability
 } from '../../models/rental/rental.js'; 
 
-const router = Router();
-
-/**
- * Display the rental form page.
- */
 const showRentalForm = (req, res) => {
     res.render('rental/form', {
         title: 'Reserve a Dumpster'
     });
 };
 
-/**
- * Handle rental form submission with validation.
- * If validation passes, save to database and redirect.
- * If validation fails, log errors and redirect back to form.
- */
 const handleRentalSubmission = async (req, res) => {
-    // Check for validation errors
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -74,7 +63,7 @@ const handleRentalSubmission = async (req, res) => {
                 }
             });
     } catch (error) {
-        console.error('Error saving contact form:', error);
+        console.error('Error saving rental form:', error);
         return res.status(500).render("rental/form", {
             title: 'Reserve a Dumpster',
             errors: [{ msg: "Unable to submit your rental. Please try again later." }],
@@ -84,9 +73,9 @@ const handleRentalSubmission = async (req, res) => {
 };
 
 //TODO: add authentication
-const showRentalConfirmation = (req, res, next) => {
+const showRentalConfirmation = async (req, res, next) => {
     const rentalId = req.params.id;
-    const rental = findById(rentalId);
+    const rental = await findById(rentalId);
 
     // If rental doesn't exist, create 404 error
     if (Object.keys(rental).length === 0) {
@@ -101,10 +90,6 @@ const showRentalConfirmation = (req, res, next) => {
     });
 };
 
-
-/**
- * Display current rentals.
- */
 const showCurrentRentals = async (req, res) => {
     let rentals = [];
 
@@ -120,14 +105,15 @@ const showCurrentRentals = async (req, res) => {
     });
 };
 
-//TODO: add phone validation
 const rentalValidation = [
     body('name')
         .trim()
         .isLength({ min: 2 })
         .withMessage('Name must be at least 2 characters'),
     body('phone')
-        .trim(),
+        .trim()
+        .isMobilePhone()
+        .withMessage('Please enter a valid phone number'),
     body('organization')
         .optional({ checkFalsy: true })
         .trim()
@@ -137,6 +123,26 @@ const rentalValidation = [
         .trim(),
     body('placement')
         .trim()
+        .notEmpty()
+        .withMessage('Please provide placement instructions')
 ]
 
-export {showCurrentRentals, showRentalForm, handleRentalSubmission, rentalValidation, showRentalConfirmation}
+const handleCheckAvailability = async (req, res) => {
+    const { size, date } = req.query;
+    try {
+        const available = await checkAvailability(size, date);
+        res.json({ available });  // was missing entirely
+    } catch (error) {
+        console.error('Availability check failed:', error);
+        res.status(500).json({ available: false });
+    }
+};
+
+export {
+    showCurrentRentals, 
+    showRentalForm, 
+    handleRentalSubmission, 
+    rentalValidation, 
+    showRentalConfirmation, 
+    handleCheckAvailability
+}
