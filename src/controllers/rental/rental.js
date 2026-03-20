@@ -1,4 +1,3 @@
-import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 import {
     createRental,
@@ -6,36 +5,25 @@ import {
     findById,
     findCurrent,
     findHistory,
-    updateStatus
+    updateStatus,
+    checkAvailability
 } from '../../models/rental/rental.js'; 
 
-const router = Router();
-
-/**
- * Display the rental form page.
- */
 const showRentalForm = (req, res) => {
     res.render('rental/form', {
         title: 'Reserve a Dumpster'
     });
 };
 
-/**
- * Handle rental form submission with validation.
- * If validation passes, save to database and redirect.
- * If validation fails, log errors and redirect back to form.
- */
 const handleRentalSubmission = async (req, res) => {
-    // Check for validation errors
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         console.error('Validation errors:', errors.array());
-        // Best UX: re-render form with errors + previously entered values
-        return res.status(400).render("rental/form", {
-        title: "Reserve a Dumpster",
-        errors: errors.array(),
-        form: req.body
+        return res.status(400).render('rental/form', {
+            title: 'Reserve a Dumpster',
+            errors: errors.array(),
+            form: req.body
         });
     }
 
@@ -66,7 +54,8 @@ const handleRentalSubmission = async (req, res) => {
             return tsOrString;
         };
         // Redirect to responses page on success
-            return res.render("rental/confirmation", {
+            return res.render('rental/confirmation', {
+                title: 'Rental Details Confirmation',
                 data: {
                     ...createdRental,
                     deliveryDate: formatDate(createdRental.deliveryDate),
@@ -74,19 +63,33 @@ const handleRentalSubmission = async (req, res) => {
                 }
             });
     } catch (error) {
-        console.error('Error saving contact form:', error);
+        console.error('Error saving rental form:', error);
         return res.status(500).render("rental/form", {
-            title: "Reserve a Dumpster",
+            title: 'Reserve a Dumpster',
             errors: [{ msg: "Unable to submit your rental. Please try again later." }],
             form: req.body
         });
     }   
 };
 
+//TODO: add authentication
+const showRentalConfirmation = async (req, res, next) => {
+    const rentalId = req.params.id;
+    const rental = await findById(rentalId);
 
-/**
- * Display current rentals.
- */
+    // If rental doesn't exist, create 404 error
+    if (Object.keys(rental).length === 0) {
+        const err = new Error(`Rental "${rentalId}" not found.`);
+        err.status = 404;
+        return next(err);
+    }
+
+    res.render('rental/confirmation', {
+        title: 'Reserve a Dumpster',
+        data: rental
+    });
+};
+
 const showCurrentRentals = async (req, res) => {
     let rentals = [];
 
@@ -98,7 +101,7 @@ const showCurrentRentals = async (req, res) => {
 
     res.render('rental/current', {
         title: 'Current Rentals',
-        contactForms
+        rentals
     });
 };
 
@@ -108,8 +111,11 @@ const rentalValidation = [
         .isLength({ min: 2 })
         .withMessage('Name must be at least 2 characters'),
     body('phone')
-        .trim(),
+        .trim()
+        .isMobilePhone()
+        .withMessage('Please enter a valid phone number'),
     body('organization')
+        .optional({ checkFalsy: true })
         .trim()
         .isLength({ min: 3 })
         .withMessage('Organization must be at least 3 characters'),
@@ -117,6 +123,26 @@ const rentalValidation = [
         .trim(),
     body('placement')
         .trim()
+        .notEmpty()
+        .withMessage('Please provide placement instructions')
 ]
 
-export {showCurrentRentals, showRentalForm, handleRentalSubmission, rentalValidation}
+const handleCheckAvailability = async (req, res) => {
+    const { size, date } = req.query;
+    try {
+        const available = await checkAvailability(size, date);
+        res.json({ available });  // was missing entirely
+    } catch (error) {
+        console.error('Availability check failed:', error);
+        res.status(500).json({ available: false });
+    }
+};
+
+export {
+    showCurrentRentals, 
+    showRentalForm, 
+    handleRentalSubmission, 
+    rentalValidation, 
+    showRentalConfirmation, 
+    handleCheckAvailability
+}
