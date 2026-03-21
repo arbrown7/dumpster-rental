@@ -62,17 +62,28 @@ const registerUser = async (req, res) => {
         }
 
         const { hash, salt } = hashPassword(req.body.password);
-        await createUser({
+        const createdUser = await createUser({
             username,
             passwordHash: hash,
             passwordSalt: salt
         });
 
-        return res.status(201).render("auth/register", {
-            title: "Register",
-            errors: [],
-            form: {},
-            successMessage: "Your account has been created."
+        if (!req.session) {
+            return res.redirect("/");
+        }
+
+        req.session.user = {
+            id: createdUser.id,
+            username: createdUser.username
+        };
+
+        req.session.save((saveError) => {
+            if (saveError) {
+                console.error("Error saving session after registration:", saveError);
+                return res.redirect("/");
+            }
+
+            return res.redirect("/");
         });
     } catch (error) {
         console.error("Error creating user:", error);

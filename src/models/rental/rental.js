@@ -4,6 +4,8 @@ import {
     where, 
     getDocs, 
     addDoc,
+    doc,
+    getDoc,
     serverTimestamp,
     Timestamp,
     limit
@@ -17,6 +19,7 @@ const totalDumpstersPerDay = 5;
 const toTimestamp = (yyyy_mm_dd) => {
   // if it's already a Date, keep it
   if (yyyy_mm_dd instanceof Date) return Timestamp.fromDate(yyyy_mm_dd);
+  if (yyyy_mm_dd?.toDate && typeof yyyy_mm_dd.toDate === "function") return yyyy_mm_dd;
   // assume "YYYY-MM-DD"
   return Timestamp.fromDate(new Date(`${yyyy_mm_dd}T00:00:00`));
 };
@@ -42,8 +45,8 @@ const createRental = async ({
     organization,
     address,
     placement,
-    deliveryDate,
-    pickupDate,
+    deliveryDate: toTimestamp(deliveryDate),
+    pickupDate: toTimestamp(pickupDate),
     agreement: !!agreement,
     status: "pending",
     paid: false,
@@ -57,35 +60,43 @@ const createRental = async ({
 };
 
 const findCurrent = async () => {
-    let currentDate = Date.now();
-    //TODO: figure out how dates will be stored in the database
-
-    //const q = query(collection(db, "rental"), where())
+  return [];
 };
 
 const findHistory = async () => {
-
+  return [];
 };
 
 const updateStatus = async () => {
-
+  return null;
 };
 
 const findByUserId = async (userId) => {
   const q = query(rentalsCol, where("userId", "==", userId));
 
   const snapshot = await getDocs(q);
-  return snapshot;
+  return snapshot.docs.map((rentalDoc) => ({
+    id: rentalDoc.id,
+    ...rentalDoc.data()
+  }));
 };
 
 const findById = async (rentalId) => {
-  const q = query(rentalsCol, where("id", "==", rentalId));
+  const rentalRef = doc(rentalsCol, rentalId);
+  const snapshot = await getDoc(rentalRef);
 
-  const snapshot = await getDocs(q);
-  return snapshot;
+  if (!snapshot.exists()) {
+    return null;
+  }
+
+  return {
+    id: snapshot.id,
+    ...snapshot.data()
+  };
 };
 
 const checkAvailability = async (size, deliveryDate) => {
+  const deliveryDateTimestamp = toTimestamp(deliveryDate);
   let currentSizeRentals = 0;
   let totalRentals = 0;
   let dumpsterInventory = 0;
@@ -93,12 +104,12 @@ const checkAvailability = async (size, deliveryDate) => {
   const rentalQ = query(
     rentalsCol, 
     where("size", "==", size), 
-    where("deliveryDate", "==", deliveryDate)
+    where("deliveryDate", "==", deliveryDateTimestamp)
   );
 
   const dayQ = query(
     rentalsCol,
-    where("deliveryDate", "==", deliveryDate)
+    where("deliveryDate", "==", deliveryDateTimestamp)
   );
 
   const dumpsterQ = query(

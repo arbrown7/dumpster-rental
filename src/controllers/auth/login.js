@@ -67,14 +67,23 @@ const loginUser = async (req, res) => {
                 id: user.id,
                 username: user.username
             };
+
+            return req.session.save((saveError) => {
+                if (saveError) {
+                    console.error("Error saving session during login:", saveError);
+                    return res.status(500).render("auth/login", {
+                        title: "Login",
+                        errors: [{ msg: "Unable to login right now. Please try again later." }],
+                        form,
+                        successMessage: ""
+                    });
+                }
+
+                return res.redirect("/");
+            });
         }
 
-        return res.render("auth/login", {
-            title: "Login",
-            errors: [],
-            form: {},
-            successMessage: "You are now logged in."
-        });
+        return res.redirect("/");
     } catch (error) {
         console.error("Error logging in:", error);
         return res.status(500).render("auth/login", {
@@ -86,4 +95,20 @@ const loginUser = async (req, res) => {
     }
 };
 
-export { showLoginPage, loginUser, loginValidation };
+const logoutUser = (req, res) => {
+    if (!req.session) {
+        return res.redirect("/");
+    }
+
+    req.session.destroy((error) => {
+        if (error) {
+            console.error("Error logging out:", error);
+            return res.redirect("/");
+        }
+
+        res.clearCookie("connect.sid");
+        return res.redirect("/");
+    });
+};
+
+export { showLoginPage, loginUser, loginValidation, logoutUser };

@@ -54,11 +54,12 @@ const addLocalVariables = (req, res, next) => {
     // Make req.query available to all templates
     res.locals.queryParams = { ...req.query };
 
-    // Convenience variable for UI state based on session state
-    res.locals.isLoggedIn = false;
-    if (req.session && req.session.user) {
-        res.locals.isLoggedIn = true;
-    }
+    // Make current path available for active navigation styling
+    res.locals.currentPath = req.path;
+
+    // Convenience variables for UI state based on session state
+    res.locals.currentUser = req.session?.user ?? null;
+    res.locals.isLoggedIn = !!res.locals.currentUser;
 
     setHeadAssetsFunctionality(res);
     

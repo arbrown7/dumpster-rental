@@ -1,11 +1,8 @@
 import { body, validationResult } from 'express-validator';
 import {
     createRental,
-    findByUserId,
     findById,
     findCurrent,
-    findHistory,
-    updateStatus,
     checkAvailability
 } from '../../models/rental/rental.js'; 
 
@@ -74,20 +71,23 @@ const handleRentalSubmission = async (req, res) => {
 
 //TODO: add authentication
 const showRentalConfirmation = async (req, res, next) => {
-    const rentalId = req.params.id;
-    const rental = await findById(rentalId);
+    try {
+        const rentalId = req.params.id;
+        const rental = await findById(rentalId);
 
-    // If rental doesn't exist, create 404 error
-    if (Object.keys(rental).length === 0) {
-        const err = new Error(`Rental "${rentalId}" not found.`);
-        err.status = 404;
-        return next(err);
+        if (!rental) {
+            const err = new Error(`Rental "${rentalId}" not found.`);
+            err.status = 404;
+            return next(err);
+        }
+
+        res.render('rental/confirmation', {
+            title: 'Reserve a Dumpster',
+            data: rental
+        });
+    } catch (error) {
+        return next(error);
     }
-
-    res.render('rental/confirmation', {
-        title: 'Reserve a Dumpster',
-        data: rental
-    });
 };
 
 const showCurrentRentals = async (req, res) => {

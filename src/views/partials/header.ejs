@@ -33,43 +33,56 @@
 </head>
 
 <body>
+    <% const isActive = (href) => {
+        const path = typeof currentPath === "string" ? currentPath : "";
+        if (href === "/") return path === "/";
+        if (href === "/rental") return path === "/rental" || path.startsWith("/rental/");
+        return path === href;
+    }; %>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">Draper City</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+        <% if (isLoggedIn) { %>
+            <div class="site-auth-strip border-bottom">
+                <div class="container d-flex justify-content-end align-items-center gap-3 py-2">
+                    <small class="text-muted mb-0">Welcome, <strong><%= currentUser?.username %></strong></small>
+                    <a class="btn btn-sm btn-outline-primary" href="/logout">Logout</a>
+                </div>
+            </div>
+        <% } %>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom site-nav">
+            <div class="container py-2">
+            <a class="navbar-brand fw-semibold" href="/">Draper City</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
                 aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarText">
-                <ul class="navbar-nav mr-auto">
+                <ul class="navbar-nav ms-auto gap-lg-2">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
+                        <a class="nav-link <%= isActive('/') ? 'active' : '' %>" href="/" <%= isActive('/') ? 'aria-current="page"' : '' %>>Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/rental">Rent a Dumpster</a>
+                        <a class="nav-link <%= isActive('/rental') ? 'active' : '' %>" href="/rental" <%= isActive('/rental') ? 'aria-current="page"' : '' %>>Rent a Dumpster</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/faq">FAQ</a>
+                        <a class="nav-link <%= isActive('/faq') ? 'active' : '' %>" href="/faq" <%= isActive('/faq') ? 'aria-current="page"' : '' %>>FAQ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/about">About</a>
+                        <a class="nav-link <%= isActive('/about') ? 'active' : '' %>" href="/about" <%= isActive('/about') ? 'aria-current="page"' : '' %>>About</a>
                     </li>
                     <!-- Only visible when NOT logged in -->
                     <% if (!isLoggedIn) { %>
                         <li class="nav-item">
-                            <a class="nav-link" href="/login">Login</a>
+                            <a class="nav-link <%= isActive('/login') ? 'active' : '' %>" href="/login" <%= isActive('/login') ? 'aria-current="page"' : '' %>>Login</a>
                         </li>
                         <% } %>
                             <!-- Only visible when logged in -->
                             <% if (isLoggedIn) { %>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/dashboard">My Rentals</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/logout">Logout</a>
+                                    <a class="nav-link <%= isActive('/dashboard') ? 'active' : '' %>" href="/dashboard" <%= isActive('/dashboard') ? 'aria-current="page"' : '' %>>My Rentals</a>
                                 </li>
                                 <% } %>
                 </ul>
+            </div>
             </div>
         </nav>
     </header>

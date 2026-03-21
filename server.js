@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import "dotenv/config";
 import session from "express-session";
 
-import router from "./src/controllers/routes.js";
+import routes from "./src/routes/index.js";
 import { addLocalVariables } from './src/middleware/global.js';
 import flash from './src/middleware/flash.js';
 
@@ -33,7 +33,7 @@ app.use(session({
     cookie: {
         httpOnly: true,
         sameSite: "lax",
-        secure: NODE_ENV === "production"
+        secure: NODE_ENV === "production" ? "auto" : false
     }
 }));
 
@@ -47,7 +47,7 @@ app.use(addLocalVariables);
 app.use(flash);
 
 // Routes
-app.use("/", router);
+app.use("/", routes);
 
 /**
  * Error Handling

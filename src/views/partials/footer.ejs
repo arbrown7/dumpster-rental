@@ -1,75 +1,47 @@
-  <footer class="container-fluid text-center">
-    <p>Footer Text</p>
+  <footer class="mt-5 border-top bg-light site-footer">
+    <div class="container py-4">
+      <div class="row g-4 align-items-start">
+        <div class="col-12 col-lg-5">
+          <h2 class="h5 mb-2">Draper City Dumpster Rental</h2>
+          <p class="mb-1">Helping residents and organizations schedule dependable dumpster service.</p>
+          <p class="mb-0"><strong>Phone:</strong> <a href="tel:+18015766501">(801) 576-6501</a></p>
+        </div>
+
+        <div class="col-6 col-lg-3">
+          <h3 class="h6 text-uppercase footer-heading">Quick Links</h3>
+          <ul class="list-unstyled mb-0">
+            <li><a href="/">Home</a></li>
+            <li><a href="/rental">Rent a Dumpster</a></li>
+            <li><a href="/faq">FAQ</a></li>
+            <li><a href="/about">About</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-lg-4">
+          <h3 class="h6 text-uppercase footer-heading">Account</h3>
+          <ul class="list-unstyled mb-0">
+            <% if (!isLoggedIn) { %>
+              <li><a href="/login">Login</a></li>
+              <li><a href="/register">Create Account</a></li>
+            <% } else { %>
+              <li><a href="/dashboard">My Rentals</a></li>
+              <li><a href="/logout">Logout</a></li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-top">
+      <div class="container py-3 d-flex flex-column flex-md-row justify-content-between gap-2">
+        <small>&copy; <%= currentYear %> Draper City. All rights reserved.</small>
+        <small><a href="/rental">Start a Rental Request</a></small>
+      </div>
+    </div>
   </footer>
 
-
   <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <!-- at the bottom of your form's .ejs file, before </body> -->
-  <script>
-  document.addEventListener('DOMContentLoaded', () => {
 
-    flatpickr('#deliveryDate', {
-      minDate: new Date().fp_incr(1),
-      disable: [
-        date => {
-          const day = date.getDay();
-          return day !== 1 && day !== 4;
-        }
-      ],
-      dateFormat: 'Y-m-d',
-      altInput: true,
-      altFormat: 'Y-m-d',
-      onChange: async (selectedDates, dateStr) => {
-        const size = document.querySelector('input[name="size"]:checked')?.value;
-        if (!size) return;
+  </body>
 
-        const res = await fetch(`/availability?date=${dateStr}&size=${size}`);
-        const { available } = await res.json();
-        document.getElementById('submitBtn').disabled = !available;
-        document.getElementById('schedule-warning').style.display = available ? 'none' : 'block';
-        const delivery = new Date(dateStr);
-        const pickup = new Date(dateStr);
-
-        if (delivery.getDay() === 0) {
-          pickup.setDate(pickup.getDate() + 3);
-        } else if (delivery.getDay() === 3) {
-          pickup.setDate(pickup.getDate() + 4);
-        } else {
-          pickup;
-        }
-
-        document.getElementById('pickupDate').value = pickup.toISOString().split('T')[0];
-      }
-    });
-
-    document.querySelectorAll('input[name="size"]').forEach(radio => {
-      radio.addEventListener('change', async () => {
-        const date = document.getElementById('deliveryDate').value;
-        const size = radio.value;
-        if (!date) return;
-
-        const res = await fetch(`/availability?date=${date}&size=${size}`);
-        const { available } = await res.json();
-        document.getElementById('submitBtn').disabled = !available;
-        document.getElementById('schedule-warning').style.display = available ? 'none' : 'block';
-
-        const delivery = new Date(date);
-        const pickup = new Date(date);
-
-        if (delivery.getDay() === 0) {
-          pickup.setDate(pickup.getDate() + 3);
-        } else if (delivery.getDay() === 3) {
-          pickup.setDate(pickup.getDate() + 4);
-        } else {
-          pickup;
-        }
-
-        document.getElementById('pickupDate').value = pickup.toISOString().split('T')[0];
-      });
-    });
-  });
-</script>
-
-</body>
-
-</html>
+  </html>

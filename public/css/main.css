@@ -17,6 +17,77 @@ body {
 	background: var(--bg) !important;
 }
 
+.site-nav {
+	background: var(--card) !important;
+}
+
+.site-auth-strip {
+	background: var(--card);
+}
+
+.site-auth-strip small {
+	font-weight: 500;
+}
+
+.site-nav .navbar-brand {
+	color: var(--text);
+	letter-spacing: -0.01em;
+}
+
+.site-nav .nav-link {
+	color: var(--muted);
+	font-weight: 500;
+	padding: 0.4rem 0.6rem;
+	border-radius: 8px;
+	transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.site-nav .nav-link:hover,
+.site-nav .nav-link:focus {
+	color: var(--primary);
+	background: #eff6ff;
+}
+
+.site-nav .nav-link.active,
+.site-nav .nav-link[aria-current="page"] {
+	color: var(--primary);
+	background: #dbeafe;
+	font-weight: 600;
+}
+
+.site-footer {
+	background: var(--card) !important;
+	color: var(--muted);
+}
+
+.site-footer h2,
+.site-footer .footer-heading {
+	color: var(--text);
+	font-weight: 600;
+	letter-spacing: -0.01em;
+}
+
+.site-footer .footer-heading {
+	font-size: 0.78rem;
+	letter-spacing: 0.05em;
+	margin-bottom: 0.7rem;
+}
+
+.site-footer a {
+	color: var(--muted);
+	text-decoration: none;
+}
+
+.site-footer a:hover,
+.site-footer a:focus {
+	color: var(--primary);
+	text-decoration: underline;
+}
+
+.error-content {
+	max-width: 600px;
+}
+
 .rental-form-page .card,
 .confirmation-page .card {
 	border-radius: 18px;
@@ -126,5 +197,9 @@ body {
 	.rental-form-page .card-body,
 	.confirmation-page .card-body {
 		padding: 1.25rem !important;
+	}
+
+	.site-nav .navbar-brand {
+		font-size: 1rem;
 	}
 }
