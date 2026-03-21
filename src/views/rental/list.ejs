@@ -1,0 +1,139 @@
+<%# rentals.ejs — reusable for all rentals, current rentals, and user rentals views %>
+<%# Expected locals: rentals (array), title (string), emptyMessage (string, optional) %>
+<%- include('../partials/header') %>
+<div class="container py-4">
+
+  <%# Page Header %>
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h2 class="fw-bold mb-0"><%= title %></h2>
+      <p class="text-muted mb-0"><%= rentals.length %> rental<%= rentals.length !== 1 ? 's' : '' %> found</p>
+    </div>
+    <% if (typeof showNewButton !== 'undefined' && showNewButton) { %>
+      <a href="/rentals/new" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i> New Rental
+      </a>
+    <% } %>
+  </div>
+
+  <%# Empty State %>
+  <% if (!rentals || rentals.length === 0) { %>
+    <div class="text-center py-5 text-muted">
+      <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+      <p class="fs-5"><%= typeof emptyMessage !== 'undefined' ? emptyMessage : 'No rentals found.' %></p>
+    </div>
+
+  <%# Rentals Table %>
+  <% } else { %>
+    <div class="card shadow-sm border-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">Customer</th>
+              <th scope="col">Address</th>
+              <th scope="col">Size</th>
+              <th scope="col">Delivery</th>
+              <th scope="col">Pickup</th>
+              <th scope="col">Status</th>
+              <th scope="col">Paid</th>
+              <th scope="col" class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% rentals.forEach(function(rental) { %>
+              <tr>
+
+                <%# Customer Info %>
+                <td>
+                  <div class="fw-semibold"><%= rental.name %></div>
+                  <div class="text-muted small"><%= rental.organization %></div>
+                  <div class="text-muted small">
+                    <i class="bi bi-telephone me-1"></i><%= rental.phone %>
+                  </div>
+                </td>
+
+                <%# Address & Placement %>
+                <td>
+                  <div><%= rental.address %></div>
+                  <% if (rental.placement) { %>
+                    <div class="text-muted small">
+                      <i class="bi bi-geo-alt me-1"></i><%= rental.placement %>
+                    </div>
+                  <% } %>
+                </td>
+
+                <%# Dumpster Size %>
+                <td>
+                  <span class="badge bg-secondary"><%= rental.size %></span>
+                </td>
+
+                <%# Delivery Date %>
+                <td>
+                  <% if (rental.deliveryDate) { %>
+                    <i class="bi bi-truck me-1 text-muted"></i><%= rental.deliveryDate %>
+                  <% } else { %>
+                    <span class="text-muted">—</span>
+                  <% } %>
+                </td>
+
+                <%# Pickup Date %>
+                <td>
+                  <% if (rental.pickupDate) { %>
+                    <i class="bi bi-calendar-check me-1 text-muted"></i><%= rental.pickupDate %>
+                  <% } else { %>
+                    <span class="text-muted">—</span>
+                  <% } %>
+                </td>
+
+                <%# Status Badge %>
+                <td>
+                  <%
+                    const statusMap = {
+                      pending:   { cls: 'warning',   icon: 'clock',         label: 'Pending' },
+                      active:    { cls: 'primary',   icon: 'play-circle',   label: 'Active' },
+                      completed: { cls: 'success',   icon: 'check-circle',  label: 'Completed' },
+                      cancelled: { cls: 'danger',    icon: 'x-circle',      label: 'Cancelled' }
+                    };
+                    const s = statusMap[rental.status] || { cls: 'secondary', icon: 'question-circle', label: rental.status };
+                  %>
+                  <span class="badge text-bg-<%= s.cls %>">
+                    <i class="bi bi-<%= s.icon %> me-1"></i><%= s.label %>
+                  </span>
+                </td>
+
+                <%# Paid Badge %>
+                <td>
+                  <% if (rental.paid) { %>
+                    <span class="badge text-bg-success">
+                      <i class="bi bi-check-lg me-1"></i>Paid
+                    </span>
+                  <% } else { %>
+                    <span class="badge text-bg-danger">
+                      <i class="bi bi-x-lg me-1"></i>Unpaid
+                    </span>
+                  <% } %>
+                </td>
+
+                <%# Actions %>
+                <td class="text-end">
+                  <a href="/rentals/<%= rental.id %>" class="btn btn-sm btn-outline-secondary me-1" title="View">
+                    <i class="bi bi-eye"></i>
+                  </a>
+                  <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+                    <a href="/rentals/<%= rental.id %>/edit" class="btn btn-sm btn-outline-primary" title="Edit">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                  <% } %>
+                </td>
+
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% } %>
+
+</div>
+<%- include('../partials/footer') %>

@@ -2,7 +2,8 @@ import { body, validationResult } from 'express-validator';
 import {
     createRental,
     findById,
-    findCurrent,
+    getAllRentals,
+    getCurrentRentals,
     checkAvailability
 } from '../../models/rental/rental.js'; 
 
@@ -33,8 +34,8 @@ const handleRentalSubmission = async (req, res) => {
         placement: req.body.placement,
         deliveryDate: req.body.deliveryDate,
         pickupDate: req.body.pickupDate,
-        agreement: req.body.agreement === "on"
-        // userId: req.user?.id ?? null  // later when auth exists
+        agreement: req.body.agreement === "on",
+        userId: req.session.user.id
     };
 
     try {
@@ -69,7 +70,6 @@ const handleRentalSubmission = async (req, res) => {
     }   
 };
 
-//TODO: add authentication
 const showRentalConfirmation = async (req, res, next) => {
     try {
         const rentalId = req.params.id;
@@ -90,19 +90,37 @@ const showRentalConfirmation = async (req, res, next) => {
     }
 };
 
-const showCurrentRentals = async (req, res) => {
+const showAllRentals = async (req, res) => {
     let rentals = [];
 
     try {
-        rentals = await findCurrent();
+        rentals = await getAllRentals();
     } catch (error) {
         console.error('Error retrieving rentals:', error);
     }
 
-    res.render('rental/current', {
-        title: 'Current Rentals',
-        rentals
+    res.render('rental/list', { 
+        rentals, 
+        title: 'All Rentals'
     });
+
+};
+
+const showCurrentRentals = async (req, res) => {
+    let activeRentals = [];
+
+    try {
+        activeRentals = await getCurrentRentals();
+    } catch (error) {
+        console.error('Error retrieving rentals:', error);
+    }
+
+    res.render('rental/list', { 
+        rentals: activeRentals, 
+        title: 'Current Rentals', 
+        emptyMessage: 'No active rentals right now.' 
+    });
+
 };
 
 const rentalValidation = [
@@ -138,11 +156,29 @@ const handleCheckAvailability = async (req, res) => {
     }
 };
 
+const requireRentalOwner = async (req, res) => {
+    if (!req.session.user) {
+        req.flash('error', 'You must be logged in');
+        return res.redirect('/login');
+    }
+    const rentalId = parseInt(req.params.id);
+    const rental = findById(rentalId);
+
+    const isOwner = req.session.user.user_id === rental.userId;
+    if (isOwner) {
+        return next();
+    }
+    req.flash('error', 'You do not have permission to access this page');
+    return res.redirect('/');
+};
+
 export {
-    showCurrentRentals, 
+    showCurrentRentals,
+    showAllRentals, 
     showRentalForm, 
     handleRentalSubmission, 
     rentalValidation, 
     showRentalConfirmation, 
-    handleCheckAvailability
+    handleCheckAvailability,
+    requireRentalOwner
 }
