@@ -4,6 +4,7 @@ import {
     where, 
     getDocs, 
     addDoc,
+    updateDoc,
     doc,
     getDoc,
     serverTimestamp,
@@ -36,8 +37,8 @@ const createRental = async ({
     organization,
     address,
     placement,
-    deliveryDate: deliveryDate,
-    pickupDate: pickupDate,
+    deliveryDate,
+    pickupDate,
     agreement: !!agreement,
     status: "pending",
     paid: false,
@@ -47,7 +48,6 @@ const createRental = async ({
 
   const docRef = await addDoc(rentalsCol, payload);
 
-  // Return something your controller can use
   return { id: docRef.id, ...payload };
 };
 
@@ -78,10 +78,6 @@ const getAllRentals = async () => {
 
 const findHistory = async () => {
   return [];
-};
-
-const updateStatus = async () => {
-  return null;
 };
 
 const findByUserId = async (userId) => {
@@ -166,6 +162,46 @@ const checkAvailability = async (size, deliveryDate) => {
   }
 };
 
+const updateRental = async (rentalId, {
+  size,
+  name,
+  phone,
+  organization = "",
+  address,
+  placement = "",
+  deliveryDate,
+  pickupDate,
+  receiptNo = ""
+}) => {
+  const today = new Date().toISOString().split('T')[0];
+  let newStatus = "pending";
+  let paymentStatus = false;
+
+  if(receiptNo && deliveryDate > today) {
+    newStatus = "paid";
+    paymentStatus = true;
+  }
+
+  const payload = {
+    size,
+    name,
+    phone,
+    organization,
+    address,
+    placement,
+    deliveryDate,
+    pickupDate,
+    status: newStatus,
+    paid: paymentStatus,
+    receiptNo: receiptNo,
+    lastUpdated: serverTimestamp()
+  };
+
+  const docRef = doc(rentalsCol, rentalId);
+  await updateDoc(docRef, payload);
+  return { id: docRef.id, ...payload };
+};
+
 export {
     createRental,
     findByUserId,
@@ -173,6 +209,6 @@ export {
     getAllRentals,
     getCurrentRentals,
     findHistory,
-    updateStatus,
-    checkAvailability
+    checkAvailability,
+    updateRental
 };

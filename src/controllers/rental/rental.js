@@ -4,7 +4,8 @@ import {
     findById,
     getAllRentals,
     getCurrentRentals,
-    checkAvailability
+    checkAvailability,
+    updateRental
 } from '../../models/rental/rental.js'; 
 
 const showRentalForm = (req, res) => {
@@ -126,10 +127,12 @@ const showCurrentRentals = async (req, res) => {
 const rentalValidation = [
     body('name')
         .trim()
+        .notEmpty()
         .isLength({ min: 2 })
         .withMessage('Name must be at least 2 characters'),
     body('phone')
         .trim()
+        .notEmpty()
         .isMobilePhone()
         .withMessage('Please enter a valid phone number'),
     body('organization')
@@ -138,7 +141,10 @@ const rentalValidation = [
         .isLength({ min: 3 })
         .withMessage('Organization must be at least 3 characters'),
     body('address')
-        .trim(),
+        .trim()
+        .notEmpty()
+        .isLength({ min: 5 })
+        .withMessage('Address must be at least 5 characters'),
     body('placement')
         .trim()
         .notEmpty()
@@ -172,6 +178,82 @@ const requireRentalOwner = async (req, res) => {
     return res.redirect('/');
 };
 
+const showEditRental = async (req, res) => {
+    const rentalId = req.params.id;
+    
+
+    try {
+        const rental = await findById(rentalId);
+
+        res.render('admin/form', {
+            title: 'Edit Rental',
+            targetRentalId: rentalId,
+            rental
+        });
+    } catch (error) {
+        console.error('Error retrieving rental', error);
+        req.flash('error', 'Unable to find rental, please try again later.');
+        return res.redirect('/rental/all');
+    }
+};
+
+const handleEditRental = async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        console.error('Validation errors:', errors.array());
+        return res.status(400).render('rental/form', {
+            title: 'Reserve a Dumpster',
+            errors: errors.array(),
+            form: req.body
+        });
+    }
+    
+    const rentalId = req.params.id;
+    const rentalInput = {
+        size: req.body.size,
+        name: req.body.name,
+        phone: req.body.phone,
+        organization: req.body.organization,
+        address: req.body.address,
+        placement: req.body.placement,
+        deliveryDate: req.body.deliveryDate,
+        pickupDate: req.body.pickupDate,
+        receiptNo: req.body.receipt
+    };
+
+    try {
+        // Save to database
+        const updatedRental = await updateRental(rentalId, rentalInput);
+        // After successfully saving to the database
+        const formatDate = (tsOrString) => {
+            if (!tsOrString) return "";
+            // If Firestore Timestamp:
+            if (typeof tsOrString.toDate === "function") {
+                return tsOrString.toDate().toLocaleDateString("en-US");
+            }
+            // If already string "YYYY-MM-DD":
+            return tsOrString;
+        };
+        // Redirect to responses page on success
+            return res.render('admin/confirmation', {
+                title: 'Rental Details Succesfully Updated',
+                data: {
+                    ...updatedRental,
+                    deliveryDate: formatDate(updatedRental.deliveryDate),
+                    pickupDate: formatDate(updatedRental.pickupDate)
+                }
+            });
+    } catch (error) {
+        console.error('Error saving rental form:', error);
+        return res.status(500).render("rental/form", {
+            title: 'Reserve a Dumpster',
+            errors: [{ msg: "Unable to update rental. Please try again later." }],
+            form: req.body
+        });
+    }   
+};
+
 export {
     showCurrentRentals,
     showAllRentals, 
@@ -180,5 +262,7 @@ export {
     rentalValidation, 
     showRentalConfirmation, 
     handleCheckAvailability,
-    requireRentalOwner
+    requireRentalOwner,
+    showEditRental,
+    handleEditRental
 }

@@ -7,7 +7,9 @@ import {
     handleCheckAvailability,
     showCurrentRentals,
     showAllRentals,
-    requireRentalOwner
+    requireRentalOwner,
+    showEditRental,
+    handleEditRental
 } from "../controllers/rental/rental.js";
 import {
     requireRole,
@@ -16,10 +18,17 @@ import {
 
 const rentalRoutes = Router();
 
+rentalRoutes.use('/rental', (req, res, next) => {
+    res.addScript('<script src="/js/rentalForm.js"></script>');
+    next();
+});
+
 rentalRoutes.get("/rental", requireLogin, showRentalForm);
 rentalRoutes.post("/rental", requireLogin, rentalValidation, handleRentalSubmission);
 rentalRoutes.get("/rental/current", requireRole('admin'), showCurrentRentals);
 rentalRoutes.get("/rental/all", requireRole('admin'), showAllRentals);
+rentalRoutes.get("/rental/:id/edit", requireRole('admin'), showEditRental);
+rentalRoutes.post("/rental/:id/edit", requireRole('admin'), handleEditRental); 
 rentalRoutes.get("/rental/:id/confirmation", requireRentalOwner, showRentalConfirmation);
 rentalRoutes.get("/availability", requireLogin, handleCheckAvailability);
 
