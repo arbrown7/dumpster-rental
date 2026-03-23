@@ -20,6 +20,10 @@ const requireRentalOwner = async (req, res) => {
 };
 
 const showMyRentals = async (req, res) => {
+    if (!req.session.user) {
+        req.flash('error', 'You must be logged in');
+        return res.redirect('/login');
+    }
     const rentals = await getUserRentals(req.session.user.id);
     res.render('rental/my-rentals', { title: 'My Rentals', rentals });
 };
