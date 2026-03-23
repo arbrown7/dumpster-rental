@@ -183,7 +183,7 @@ const updateRental = async (rentalId, {
     deliveryDate,
     pickupDate,
     status,
-    paid: status === 'paid',
+    paid: !!receiptNo,
     receiptNo: receiptNo,
     lastUpdated: serverTimestamp()
   };
