@@ -43,7 +43,8 @@ const createRental = async ({
     status: "pending",
     paid: false,
     receiptNo: null,
-    createdAt: serverTimestamp()
+    createdAt: serverTimestamp(),
+    lastUpdated: serverTimestamp()
   };
 
   const docRef = await addDoc(rentalsCol, payload);
@@ -171,16 +172,10 @@ const updateRental = async (rentalId, {
   placement = "",
   deliveryDate,
   pickupDate,
-  receiptNo = ""
+  receiptNo = "",
+  status
 }) => {
   const today = new Date().toISOString().split('T')[0];
-  let newStatus = "pending";
-  let paymentStatus = false;
-
-  if(receiptNo && deliveryDate > today) {
-    newStatus = "paid";
-    paymentStatus = true;
-  }
 
   const payload = {
     size,
@@ -191,8 +186,8 @@ const updateRental = async (rentalId, {
     placement,
     deliveryDate,
     pickupDate,
-    status: newStatus,
-    paid: paymentStatus,
+    status,
+    paid: status === 'paid',
     receiptNo: receiptNo,
     lastUpdated: serverTimestamp()
   };

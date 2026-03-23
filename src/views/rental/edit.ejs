@@ -5,7 +5,18 @@
                 <div class="col-12 col-lg-8">
                     <div class="card shadow-sm">
                         <div class="card-body p-4">
-                            <h1 class="h3 mb-4">Draper City Dumpster Rental</h1>
+                            <h1 class="h3 mb-4">Update Rental</h1>
+
+                            <% if (rental.createdAt) { %>
+                                <p class="text-muted small">
+                                    <i class="bi bi-calendar-plus me-1"></i>Created: <%= rental.createdAt %>
+                                </p>
+                            <% } %>
+                            <% if (rental.lastUpdated) { %>
+                                <p class="text-muted small">
+                                    <i class="bi bi-pencil me-1"></i>Last Updated: <%= rental.lastUpdated %>
+                                </p>
+                            <% } %>
 
                             <form action="/rental/<%= targetRentalId %>/edit" method="POST" class="vstack gap-3">
                                 <div>
@@ -68,6 +79,21 @@
                                 <div class="alert alert-warning d-none" role="alert" id="schedule-warning">
                                     <strong>There are no dumpsters available in that size on your selected delivery date.</strong> 
                                     <p>Please select a different date or try a different size.</p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label mt-3" for="receiptNo">Receipt Number</label>
+                                    <input class="form-control" type="text" id="receiptNo" name="receiptNo" value="<%= rental.receiptNo %>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label mt-3" for="status">Status</label>
+                                    <select class="form-control" id="status" name="status" required>
+                                    <option value="pending"   <%= rental.status === 'pending'   ? 'selected' : '' %>>Pending</option>
+                                    <option value="paid"      <%= rental.status === 'paid'      ? 'selected' : '' %>>Paid</option>
+                                    <option value="cancelled" <%= rental.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                    <option value="completed" <%= rental.status === 'completed' ? 'selected' : '' %>>Completed</option>
+                                    </select>
                                 </div>
 
                                 <button class="btn btn-primary" type="submit" id="submitBtn">Submit Request</button>

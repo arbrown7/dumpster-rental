@@ -9,7 +9,9 @@ import {
     showAllRentals,
     requireRentalOwner,
     showEditRental,
-    handleEditRental
+    handleEditRental,
+    rentalEditValidation,
+    //showRentalEditConfirmation
 } from "../controllers/rental/rental.js";
 import {
     requireRole,
@@ -28,7 +30,8 @@ rentalRoutes.post("/rental", requireLogin, rentalValidation, handleRentalSubmiss
 rentalRoutes.get("/rental/current", requireRole('admin'), showCurrentRentals);
 rentalRoutes.get("/rental/all", requireRole('admin'), showAllRentals);
 rentalRoutes.get("/rental/:id/edit", requireRole('admin'), showEditRental);
-rentalRoutes.post("/rental/:id/edit", requireRole('admin'), handleEditRental); 
+rentalRoutes.post("/rental/:id/edit", requireRole('admin'), rentalEditValidation, handleEditRental); 
+//entalRoutes.get("/rental/:id/edit/confirmation", requireRole('admin'), showRentalEditConfirmation);
 rentalRoutes.get("/rental/:id/confirmation", requireRentalOwner, showRentalConfirmation);
 rentalRoutes.get("/availability", requireLogin, handleCheckAvailability);
 

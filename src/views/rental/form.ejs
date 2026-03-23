@@ -1,4 +1,11 @@
 <%- include('../partials/header') %>
+<% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+  <div class="alert alert-danger" role="alert">
+    <% errors.forEach(function(error) { %>
+      <div><i class="bi bi-exclamation-triangle me-1"></i><%= error.msg %></div>
+    <% }); %>
+  </div>
+<% } %>
     <div class="bg-light rental-form-page">
         <div class="container py-5">
             <div class="row justify-content-center">
