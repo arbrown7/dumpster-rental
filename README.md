@@ -9,16 +9,16 @@ A web application for Draper City residents to reserve dumpsters for residential
 ## Screenshots
 
 ### Homepage
-![Homepage](screenshots/homepage.png)
+![Homepage](public/images/screenshots/homepage.png)
 
 ### Rental Form
-![Rental Form](screenshots/rental-form.png)
+![Rental Form](public/images/screenshots/rental-form.png)
 
 ### Admin Dashboard
-![Admin Dashboard](screenshots/admin-dashboard.png)
+![Admin Dashboard](public/images/screenshots/admin-dashboard.png)
 
 ### My Rentals
-![My Rentals](screenshots/my-rentals.png)
+![My Rentals](public/images/screenshots/my-rentals.png)
 
 ---
 
