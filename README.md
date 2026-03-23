@@ -1,15 +1,73 @@
-# dumpster-rental
-A website where customers can rent dumpsters
+# Draper City Dumpster Rental
 
-## MVC Structure
+A web application for Draper City residents to reserve dumpsters for residential clean-up projects. Built as a capstone project for WDD499.
 
-- `src/routes`: Route registration only (maps URL paths to controllers)
-- `src/controllers`: Request handling + validation + view rendering
-- `src/models`: Firestore data access functions
-- `src/views`: EJS templates and partials
-- `public`: Static assets (CSS, client-side JavaScript, images)
+🔗 **Live Demo:** [dumpter-rental.onrender.com]([https://dumpster-rental.onrender.com])
 
-## Notes
+---
 
-- Keep page-specific browser code out of shared partials. 
-- Keep Firestore snapshots inside models; controllers should receive plain objects/arrays.
+## Screenshots
+
+### Homepage
+![Homepage](public/images/screenshots/homepage.png)
+
+### Rental Form
+![Rental Form](public/images/screenshots/rental-form.png)
+
+### Admin Dashboard
+![Admin Dashboard](public/images/screenshots/admin-dashboard.png)
+
+### My Rentals
+![My Rentals](public/images/screenshots/my-rentals.png)
+
+---
+
+## Features
+
+### For Residents
+- 📅 Reserve a 20 or 30 yard dumpster online
+- 🗓️ Flatpickr date picker restricted to Mondays and Thursdays only
+- ⚡ Real-time availability check before submission
+- 📋 View all personal rentals grouped by status (active, pending, past)
+- 📄 Full rental details on the My Rentals page — no separate detail page needed
+
+### For Admins
+- 🔐 Role-based access control (admin / renter)
+- 📊 View all rentals or current active rentals
+- ✏️ Edit any rental — update status, receipt number, dates, and customer info
+<!-- - 👥 View and manage all users, including role assignment -->
+
+### General
+- 🔒 Secure session-based authentication with hashed passwords
+- 💬 Flash messages for errors and confirmations
+- 📱 Fully responsive Bootstrap 5 UI
+
+---
+
+## Test Accounts
+
+| Username | Role | Notes |
+|---|---|---|
+| `admintest` | Admin | Full access to admin dashboard, all rentals, user management |
+| `basicuser` | Renter | Standard resident access — can book and view own rentals |
+
+> Passwords are not listed here. Contact the project owner for credentials.
+
+---
+
+## Known Limitations
+
+- **No payment processing** — the app tracks payment status and receipt numbers manually, but does not process real payments. An admin must mark rentals as paid after receiving payment offline. Users are instructed to call city hall after submitting a rental request.
+- **MemoryStore sessions** — the app uses Express's default in-memory session store. This is not production-grade and will not persist sessions across server restarts or scale beyond a single process. A persistent session store (e.g. Redis or Firestore-backed) would be needed for a true production deployment.
+
+---
+
+## Tech Stack
+
+- **Backend:** Node.js, Express.js (ES Modules)
+- **Templating:** EJS
+- **Database:** Firebase Firestore
+- **Auth:** express-session, bcrypt
+- **Frontend:** Bootstrap 5, Bootstrap Icons, Flatpickr
+- **Validation:** express-validator
+- **Deployment:** Render
