@@ -80,7 +80,7 @@ const loginUser = async (req, res) => {
                     });
                 }
 
-                return res.redirect("/");
+                return res.redirect("/rental");
             });
         }
 
