@@ -1,0 +1,71 @@
+<%# rental/my-rentals.ejs — User's Rentals grouped by status %>
+<%# Expected locals: rentals (array) %>
+<%- include('../partials/header') %>
+<%
+  const pending = rentals.filter(r => r.status === 'pending');
+  const active = rentals.filter(r => r.status === 'active');
+  const past = rentals.filter(r => r.status === 'completed' || r.status === 'cancelled');
+%>
+
+<div class="container py-4">
+
+  <div class="mb-4">
+    <h2 class="fw-bold mb-0">My Rentals</h2>
+    <p class="text-muted"><%= rentals.length %> rental<%= rentals.length !== 1 ? 's' : '' %> total</p>
+  </div>
+
+  <% if (rentals.length === 0) { %>
+    <div class="text-center py-5 text-muted">
+      <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+      <p class="fs-5">You have no rentals yet.</p>
+      <a href="/rental" class="btn btn-primary mt-2">Reserve a Dumpster</a>
+    </div>
+
+  <% } else { %>
+
+    <%# Active %>
+    <% if (active.length > 0) { %>
+      <h5 class="fw-semibold mb-3">
+        <span class="badge text-bg-primary me-2">
+          <i class="bi bi-play-circle me-1"></i>Active
+        </span>
+      </h5>
+      <div class="row g-3 mb-4">
+        <% active.forEach(function(rental) { %>
+          <%- include('../partials/rental-card', { rental }) %>
+        <% }); %>
+      </div>
+    <% } %>
+
+    <%# Pending %>
+    <% if (pending.length > 0) { %>
+      <h5 class="fw-semibold mb-3">
+        <span class="badge text-bg-warning me-2">
+          <i class="bi bi-clock me-1"></i>Pending
+        </span>
+      </h5>
+      <div class="row g-3 mb-4">
+        <% pending.forEach(function(rental) { %>
+          <%- include('../partials/rental-card', { rental }) %>
+        <% }); %>
+      </div>
+    <% } %>
+
+    <%# Past %>
+    <% if (past.length > 0) { %>
+      <h5 class="fw-semibold mb-3">
+        <span class="badge text-bg-secondary me-2">
+          <i class="bi bi-archive me-1"></i>Past
+        </span>
+      </h5>
+      <div class="row g-3 mb-4">
+        <% past.forEach(function(rental) { %>
+          <%- include('../partials/rental-card', { rental }) %>
+        <% }); %>
+      </div>
+    <% } %>
+
+  <% } %>
+
+</div>
+<%- include('../partials/footer') %>

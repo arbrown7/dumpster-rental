@@ -81,7 +81,7 @@
                             <!-- Only visible when logged in -->
                             <% if (isLoggedIn) { %>
                                 <li class="nav-item">
-                                    <a class="nav-link <%= isActive('/dashboard') ? 'active' : '' %>" href="/dashboard" <%= isActive('/dashboard') ? 'aria-current="page"' : '' %>>My Rentals</a>
+                                    <a class="nav-link <%= isActive('/dashboard') ? 'active' : '' %>" href="/my-rentals" <%= isActive('/my-rentals') ? 'aria-current="page"' : '' %>>My Rentals</a>
                                 </li>
                                 <% } %>
                 </ul>

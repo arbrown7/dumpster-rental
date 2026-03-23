@@ -77,11 +77,7 @@ const getAllRentals = async () => {
   }));
 };
 
-const findHistory = async () => {
-  return [];
-};
-
-const findByUserId = async (userId) => {
+const getUserRentals = async (userId) => {
   const q = query(rentalsCol, where("userId", "==", userId));
 
   const snapshot = await getDocs(q);
@@ -199,11 +195,10 @@ const updateRental = async (rentalId, {
 
 export {
     createRental,
-    findByUserId,
+    getUserRentals,
     findById,
     getAllRentals,
     getCurrentRentals,
-    findHistory,
     checkAvailability,
     updateRental
 };

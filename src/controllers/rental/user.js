@@ -1,5 +1,6 @@
 import {
-    findById
+    findById,
+    getUserRentals
 } from '../../models/rental/rental.js'; 
 
 const requireRentalOwner = async (req, res) => {
@@ -10,7 +11,7 @@ const requireRentalOwner = async (req, res) => {
     const rentalId = parseInt(req.params.id);
     const rental = findById(rentalId);
 
-    const isOwner = req.session.user.user_id === rental.userId;
+    const isOwner = req.session.user.id === rental.userId;
     if (isOwner) {
         return next();
     }
@@ -19,8 +20,8 @@ const requireRentalOwner = async (req, res) => {
 };
 
 const showMyRentals = async (req, res) => {
-  const rentals = await getUserRentals(req.session.user.id);
-  res.render('rental/my-rentals', { title: 'My Rentals', rentals });
+    const rentals = await getUserRentals(req.session.user.id);
+    res.render('rental/my-rentals', { title: 'My Rentals', rentals });
 };
 
 export {
