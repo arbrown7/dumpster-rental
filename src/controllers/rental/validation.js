@@ -57,7 +57,7 @@ const rentalEditValidation = [
         .notEmpty()
         .withMessage('Receipt number is required when status is paid'),
     body('status')
-        .isIn(['pending', 'paid', 'cancelled', 'completed'])
+        .isIn(['pending', 'active', 'cancelled', 'completed'])
         .withMessage('Invalid status value'),
 ]
 

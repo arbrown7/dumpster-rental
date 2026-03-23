@@ -5,8 +5,16 @@ import {
     getCurrentRentals,
     updateRental
 } from '../../models/rental/rental.js'; 
+import {
+    formatDateTime
+} from '../rental/helpers.js';
 
 const showAllRentals = async (req, res) => {
+    if (!req.session.user) {
+        req.flash('error', 'You must be logged in');
+        return res.redirect('/login');
+    }
+
     let rentals = [];
 
     try {
@@ -23,6 +31,11 @@ const showAllRentals = async (req, res) => {
 };
 
 const showCurrentRentals = async (req, res) => {
+    if (!req.session.user) {
+        req.flash('error', 'You must be logged in');
+        return res.redirect('/login');
+    }
+
     let activeRentals = [];
 
     try {
@@ -40,6 +53,11 @@ const showCurrentRentals = async (req, res) => {
 };
 
 const showEditRental = async (req, res) => {
+    if (!req.session.user) {
+        req.flash('error', 'You must be logged in');
+        return res.redirect('/login');
+    }
+
     const rentalId = req.params.id;
     
     try {
@@ -62,6 +80,11 @@ const showEditRental = async (req, res) => {
 };
 
 const handleEditRental = async (req, res) => {
+    if (!req.session.user) {
+        req.flash('error', 'You must be logged in');
+        return res.redirect('/login');
+    }
+    
     const errors = validationResult(req);
     const rentalId = req.params.id;
 

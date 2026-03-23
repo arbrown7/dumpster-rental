@@ -11,4 +11,13 @@ const faqPage = (req, res) => {
     res.render('faq', {title: 'Frequently Asked Questions'});
 }
 
-export { homePage, aboutPage, faqPage };
+const termsPage = (req, res) => {
+    res.render('terms', {title: 'Rules and Liability Terms'});
+}
+
+export { 
+  homePage, 
+  aboutPage, 
+  faqPage, 
+  termsPage 
+};

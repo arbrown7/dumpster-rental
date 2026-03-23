@@ -8,12 +8,21 @@ import {
 } from '../rental/helpers.js';
 
 const showRentalForm = (req, res) => {
+    if (!req.session.user) {
+        req.flash('error', 'You must be logged in');
+        return res.redirect('/login');
+    }
     res.render('rental/form', {
         title: 'Reserve a Dumpster'
     });
 };
 
 const handleRentalSubmission = async (req, res) => {
+    if (!req.session.user) {
+        req.flash('error', 'You must be logged in');
+        return res.redirect('/login');
+    }
+
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -70,7 +79,12 @@ const handleRentalSubmission = async (req, res) => {
     }   
 };
 
-const showRentalConfirmation = async (req, res, next) => {
+const showRentalConfirmation = async (req, res, next) => {  
+    if (!req.session.user) {
+        req.flash('error', 'You must be logged in');
+        return res.redirect('/login');
+    }
+    
     try {
         const rentalId = req.params.id;
         const rental = await findById(rentalId);

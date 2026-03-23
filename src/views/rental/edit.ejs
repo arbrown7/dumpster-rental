@@ -90,7 +90,7 @@
                                     <label class="form-label mt-3" for="status">Status</label>
                                     <select class="form-control" id="status" name="status" required>
                                     <option value="pending"   <%= rental.status === 'pending'   ? 'selected' : '' %>>Pending</option>
-                                    <option value="paid"      <%= rental.status === 'paid'      ? 'selected' : '' %>>Paid</option>
+                                    <option value="active"      <%= rental.status === 'active'      ? 'selected' : '' %>>Active</option>
                                     <option value="cancelled" <%= rental.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
                                     <option value="completed" <%= rental.status === 'completed' ? 'selected' : '' %>>Completed</option>
                                     </select>
