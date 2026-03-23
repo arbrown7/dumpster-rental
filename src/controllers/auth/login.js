@@ -65,7 +65,8 @@ const loginUser = async (req, res) => {
         if (req.session) {
             req.session.user = {
                 id: user.id,
-                username: user.username
+                username: user.username,
+                role: user.role
             };
 
             return req.session.save((saveError) => {
@@ -79,7 +80,7 @@ const loginUser = async (req, res) => {
                     });
                 }
 
-                return res.redirect("/");
+                return res.redirect("/rental");
             });
         }
 

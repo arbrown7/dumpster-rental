@@ -26,6 +26,7 @@ app.use(
   express.static(path.join(__dirname, "node_modules", "bootstrap", "dist"))
 );
 app.use(express.static(path.join(__dirname, "public")));
+console.log('Static files served from:', path.join(__dirname, 'public'));
 app.use(session({
     secret: process.env.SESSION_SECRET || "local-dev-session-secret",
     resave: false,

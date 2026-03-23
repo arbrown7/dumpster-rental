@@ -1,0 +1,90 @@
+<%# partials/rental-card.ejs %>
+<%# Expected locals: rental (object) %>
+
+<div class="col-12 col-md-6 col-lg-4">
+  <div class="card border-0 h-100" style="border-radius: 16px; border: 1px solid var(--border) !important; box-shadow: var(--shadow);">
+    <div class="card-body p-4">
+
+      <%# Status & Paid Badges %>
+      <%
+        const statusMap = {
+          pending:   { cls: 'warning',   icon: 'clock',        label: 'Pending' },
+          active:    { cls: 'primary',   icon: 'play-circle',  label: 'Active' },
+          completed: { cls: 'success',   icon: 'check-circle', label: 'Completed' },
+          cancelled: { cls: 'danger',    icon: 'x-circle',     label: 'Cancelled' },
+          paid:      { cls: 'success',   icon: 'check-circle', label: 'Paid' }
+        };
+        const s = statusMap[rental.status] || { cls: 'secondary', icon: 'question-circle', label: rental.status };
+      %>
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <span class="badge text-bg-<%= s.cls %>">
+          <i class="bi bi-<%= s.icon %> me-1"></i><%= s.label %>
+        </span>
+        <% if (rental.paid) { %>
+          <span class="badge text-bg-success">
+            <i class="bi bi-check-lg me-1"></i>Paid
+          </span>
+        <% } else { %>
+          <span class="badge text-bg-danger">
+            <i class="bi bi-x-lg me-1"></i>Unpaid
+          </span>
+        <% } %>
+      </div>
+
+      <%# Size %>
+      <h6 class="fw-bold mb-3" style="font-size: 1.1rem; color: var(--text);">
+        <i class="bi bi-box-seam me-2 text-primary"></i><%= rental.size %> Dumpster
+      </h6>
+
+      <hr style="border-color: var(--border); margin: 0.75rem 0;">
+
+      <%# Customer Info %>
+      <p class="mb-1" style="font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;">Customer</p>
+      <p class="mb-1" style="font-size: 0.9rem; color: var(--text); font-weight: 500;"><%= rental.name %></p>
+      <% if (rental.organization) { %>
+        <p class="mb-1" style="font-size: 0.875rem; color: var(--muted);">
+          <i class="bi bi-building me-1"></i><%= rental.organization %>
+        </p>
+      <% } %>
+      <p class="mb-3" style="font-size: 0.875rem; color: var(--muted);">
+        <i class="bi bi-telephone me-1"></i><%= rental.phone %>
+      </p>
+
+      <%# Address & Placement %>
+      <p class="mb-1" style="font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;">Location</p>
+      <p class="mb-1" style="font-size: 0.875rem; color: var(--text);">
+        <i class="bi bi-geo-alt me-1 text-primary"></i><%= rental.address %>
+      </p>
+      <% if (rental.placement) { %>
+        <p class="mb-3" style="font-size: 0.875rem; color: var(--muted);">
+          <i class="bi bi-pin-map me-1"></i><%= rental.placement %>
+        </p>
+      <% } %>
+
+      <%# Dates %>
+      <p class="mb-1" style="font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;">Schedule</p>
+      <p class="mb-1" style="font-size: 0.875rem; color: var(--text);">
+        <i class="bi bi-truck me-1 text-primary"></i><strong>Delivery</strong> &nbsp;<%= rental.deliveryDate %>
+      </p>
+      <p class="mb-3" style="font-size: 0.875rem; color: var(--text);">
+        <i class="bi bi-calendar-check me-1 text-primary"></i><strong>Pickup</strong> &nbsp;<%= rental.pickupDate %>
+      </p>
+
+      <%# Receipt No if present %>
+      <% if (rental.receiptNo) { %>
+        <p class="mb-1" style="font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;">Receipt</p>
+        <p class="mb-0" style="font-size: 0.875rem; color: var(--text);">
+          <i class="bi bi-receipt me-1 text-primary"></i><%= rental.receiptNo %>
+        </p>
+      <% } %>
+
+    </div>
+
+    <% if (rental.createdAt) { %>
+      <div class="card-footer bg-transparent px-4 py-2" style="border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--muted); border-radius: 0 0 16px 16px;">
+        <i class="bi bi-clock-history me-1"></i>Submitted <%= rental.createdAt %>
+      </div>
+    <% } %>
+
+  </div>
+</div>

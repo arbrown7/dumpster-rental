@@ -1,0 +1,178 @@
+<%# views/rental/terms.ejs — Dumpster Program Info & Terms %>
+<%- include('partials/header') %>
+
+<div class="container py-5" style="max-width: 780px;">
+
+  <%# Page Header %>
+  <div class="mb-5">
+    <p class="mb-1" style="font-size: 0.78rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted);">Draper City</p>
+    <h1 style="font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; color: var(--text);">Dumpster Rental Program Terms and Conditions</h1>
+    <p class="mt-2" style="color: var(--muted); font-size: 1rem; line-height: 1.7;">
+      Please read the following information and terms before reserving a dumpster.
+    </p>
+  </div>
+
+  <%# About the Program %>
+  <div class="card border-0 mb-4" style="border: 1px solid var(--border) !important; border-radius: 16px; box-shadow: var(--shadow);">
+    <div class="card-body p-4">
+      <h2 class="mb-3" style="font-size: 1.1rem; font-weight: 600; color: var(--text);">
+        <i class="bi bi-info-circle text-primary me-2"></i>About the Program
+      </h2>
+      <p style="font-size: 0.925rem; color: var(--muted); line-height: 1.75; margin: 0;">
+        In addition to curbside garbage and recycling collection, Draper City offers its residents a
+        <strong style="color: var(--text);">Dumpster Clean-up Program</strong> available year-round for residential use only.
+        Residents, neighborhood associations, homeowners associations, or other volunteer groups may schedule
+        delivery of a roll-off dumpster for clean-up projects.
+      </p>
+    </div>
+  </div>
+
+  <%# Sizes & Pricing %>
+  <div class="card border-0 mb-4" style="border: 1px solid var(--border) !important; border-radius: 16px; box-shadow: var(--shadow);">
+    <div class="card-body p-4">
+      <h2 class="mb-3" style="font-size: 1.1rem; font-weight: 600; color: var(--text);">
+        <i class="bi bi-box-seam text-primary me-2"></i>Sizes &amp; Pricing
+      </h2>
+      <div class="row g-3">
+        <div class="col-sm-6">
+          <div class="p-3 rounded-3" style="background: var(--bg); border: 1px solid var(--border);">
+            <div style="font-size: 1.75rem; font-weight: 700; color: var(--primary); letter-spacing: -0.03em;">20 yd</div>
+            <div style="font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem;">16' long &times; 8' wide &times; 6' high</div>
+            <div style="font-size: 1.2rem; font-weight: 700; color: var(--text);">$120.00</div>
+            <div style="font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem;">Weight limit: 6 tons</div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="p-3 rounded-3" style="background: var(--bg); border: 1px solid var(--border);">
+            <div style="font-size: 1.75rem; font-weight: 700; color: var(--primary); letter-spacing: -0.03em;">30 yd</div>
+            <div style="font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem;">22' long &times; 8' wide &times; 6' high</div>
+            <div style="font-size: 1.2rem; font-weight: 700; color: var(--text);">$150.00</div>
+            <div style="font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem;">Weight limit: 10 tons</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# Rental Limits %>
+  <div class="card border-0 mb-4" style="border: 1px solid var(--border) !important; border-radius: 16px; box-shadow: var(--shadow);">
+    <div class="card-body p-4">
+      <h2 class="mb-3" style="font-size: 1.1rem; font-weight: 600; color: var(--text);">
+        <i class="bi bi-person-check text-primary me-2"></i>Rental Limits
+      </h2>
+      <div class="mb-3 pb-3" style="border-bottom: 1px solid var(--border);">
+        <p class="mb-1" style="font-size: 0.85rem; font-weight: 600; color: var(--text);">Individual Residents</p>
+        <p style="font-size: 0.9rem; color: var(--muted); line-height: 1.7; margin: 0;">
+          Limited to <strong style="color: var(--text);">1 dumpster rental, up to 3 times per 365-day period</strong> per delivery location
+          (3 rentals total). All 3 may take place simultaneously depending on availability.
+        </p>
+      </div>
+      <div>
+        <p class="mb-1" style="font-size: 0.85rem; font-weight: 600; color: var(--text);">HOAs &amp; Volunteer Groups</p>
+        <p style="font-size: 0.9rem; color: var(--muted); line-height: 1.7; margin: 0;">
+          Limited to <strong style="color: var(--text);">up to 4 dumpsters, up to 2 times per 365-day period</strong> per association
+          location (8 rentals total). HOAs may only schedule deliveries on <strong style="color: var(--text);">Mondays</strong>.
+          Exceptions require advance approval from the Solid Waste Manager.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <%# Schedule %>
+  <div class="card border-0 mb-4" style="border: 1px solid var(--border) !important; border-radius: 16px; box-shadow: var(--shadow);">
+    <div class="card-body p-4">
+      <h2 class="mb-3" style="font-size: 1.1rem; font-weight: 600; color: var(--text);">
+        <i class="bi bi-calendar-week text-primary me-2"></i>Delivery &amp; Pickup Schedule
+      </h2>
+      <ul class="list-unstyled mb-0" style="font-size: 0.9rem; color: var(--muted); line-height: 1.8;">
+        <li class="mb-2"><i class="bi bi-truck text-primary me-2"></i>Deliveries occur on <strong style="color: var(--text);">Mondays or Thursdays</strong>, as late as 3:30 pm.</li>
+        <li class="mb-2"><i class="bi bi-calendar-check text-primary me-2"></i><strong style="color: var(--text);">Monday deliveries</strong> are picked up the following Thursday.</li>
+        <li class="mb-2"><i class="bi bi-calendar-check text-primary me-2"></i><strong style="color: var(--text);">Thursday deliveries</strong> are picked up the following Monday, starting at 7:00 am.</li>
+        <li><i class="bi bi-clock text-primary me-2"></i>Due to popularity, a dumpster may not be available for up to <strong style="color: var(--text);">2 weeks</strong> during peak times.</li>
+      </ul>
+    </div>
+  </div>
+
+  <%# Acceptable Items %>
+  <div class="card border-0 mb-4" style="border: 1px solid var(--border) !important; border-radius: 16px; box-shadow: var(--shadow);">
+    <div class="card-body p-4">
+      <h2 class="mb-3" style="font-size: 1.1rem; font-weight: 600; color: var(--text);">
+        <i class="bi bi-check2-circle text-primary me-2"></i>Acceptable &amp; Prohibited Items
+      </h2>
+      <div class="row g-3">
+        <div class="col-sm-6">
+          <p class="mb-2" style="font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted);">
+            <i class="bi bi-check-lg text-success me-1"></i>Acceptable
+          </p>
+          <ul class="list-unstyled mb-0" style="font-size: 0.875rem; color: var(--muted); line-height: 1.9;">
+            <li>Yard debris (limbs, shrubbery, clippings)</li>
+            <li>Building materials</li>
+            <li>Household items &amp; furniture</li>
+            <li>Some appliances</li>
+          </ul>
+        </div>
+        <div class="col-sm-6">
+          <p class="mb-2" style="font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted);">
+            <i class="bi bi-x-lg text-danger me-1"></i>Prohibited
+          </p>
+          <ul class="list-unstyled mb-0" style="font-size: 0.875rem; color: var(--muted); line-height: 1.9;">
+            <li>Pesticides, herbicides, solvents</li>
+            <li>Paints, motor oil, gasoline</li>
+            <li>Tires &amp; batteries</li>
+            <li>Freezers &amp; refrigerators</li>
+            <li>Sealed metal or plastic drums</li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-3 p-3 rounded-3" style="background: #fef2f2; border: 1px solid #fecaca; font-size: 0.875rem; color: #991b1b;">
+        <i class="bi bi-telephone me-2"></i>For hazardous waste disposal, call <strong>385-468-3862</strong>.
+      </div>
+    </div>
+  </div>
+
+  <%# Weight & Placement %>
+  <div class="card border-0 mb-4" style="border: 1px solid var(--border) !important; border-radius: 16px; box-shadow: var(--shadow);">
+    <div class="card-body p-4">
+      <h2 class="mb-3" style="font-size: 1.1rem; font-weight: 600; color: var(--text);">
+        <i class="bi bi-pin-map text-primary me-2"></i>Weight Limits &amp; Placement
+      </h2>
+      <ul class="list-unstyled mb-0" style="font-size: 0.9rem; color: var(--muted); line-height: 1.8;">
+        <li class="mb-2"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Dumpsters must be placed on a <strong style="color: var(--text);">flat, solid surface</strong>.</li>
+        <li class="mb-2"><i class="bi bi-exclamation-triangle text-warning me-2"></i>If filling with <strong style="color: var(--text);">concrete, dirt, or rock</strong>, dumpster can only be filled <strong style="color: var(--text);">one-third full</strong>.</li>
+        <li class="mb-2"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Overweight dumpsters will be partially emptied on-site until they meet transport requirements.</li>
+        <li><i class="bi bi-exclamation-triangle text-warning me-2"></i>Placement on driveways, sidewalks, or concrete areas <strong style="color: var(--text);">may cause cracking or breakage</strong>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <%# Liability & Refunds %>
+  <div class="card border-0 mb-5" style="border: 1px solid var(--border) !important; border-radius: 16px; box-shadow: var(--shadow);">
+    <div class="card-body p-4">
+      <h2 class="mb-3" style="font-size: 1.1rem; font-weight: 600; color: var(--text);">
+        <i class="bi bi-shield-exclamation text-primary me-2"></i>Liability &amp; Cancellations
+      </h2>
+      <div class="mb-3 pb-3" style="border-bottom: 1px solid var(--border); font-size: 0.9rem; color: var(--muted); line-height: 1.75;">
+        The responsible party signing for the dumpster will be <strong style="color: var(--text);">liable for illegal placement of prohibited items</strong>
+        or any spillage from overloading. Draper City is released from all liability for damages resulting from
+        equipment or personnel delivering or removing dumpsters, and from any injuries incurred by individuals using the dumpsters.
+      </div>
+      <ul class="list-unstyled mb-0" style="font-size: 0.9rem; color: var(--muted); line-height: 1.8;">
+        <li class="mb-1"><i class="bi bi-arrow-return-left text-primary me-2"></i>Refunds are only given if cancelled at least <strong style="color: var(--text);">5 business days</strong> prior to delivery.</li>
+        <li><i class="bi bi-receipt text-primary me-2"></i>All cancellations are charged a <strong style="color: var(--text);">$10 bookkeeping fee</strong>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- <%# Back / CTA %>
+  <div class="d-flex gap-3">
+    <a href="javascript:history.back()" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left me-1"></i>Go Back
+    </a>
+    <a href="/rental" class="btn btn-primary">
+      <i class="bi bi-check2 me-1"></i>I Understand &mdash; Reserve a Dumpster
+    </a>
+  </div> -->
+
+</div>
+
+ <%- include('partials/footer') %>

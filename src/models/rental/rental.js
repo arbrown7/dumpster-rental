@@ -4,6 +4,7 @@ import {
     where, 
     getDocs, 
     addDoc,
+    updateDoc,
     doc,
     getDoc,
     serverTimestamp,
@@ -16,15 +17,6 @@ const rentalsCol = collection(db, "rentals");
 const dumpstersCol = collection(db, "dumpsters");
 const totalDumpstersPerDay = 5;
 
-const toTimestamp = (yyyy_mm_dd) => {
-  // if it's already a Date, keep it
-  if (yyyy_mm_dd instanceof Date) return Timestamp.fromDate(yyyy_mm_dd);
-  if (yyyy_mm_dd?.toDate && typeof yyyy_mm_dd.toDate === "function") return yyyy_mm_dd;
-  // assume "YYYY-MM-DD"
-  return Timestamp.fromDate(new Date(`${yyyy_mm_dd}T00:00:00`));
-};
-
-//TODO: add rental id sequentially
 const createRental = async ({
   userId = null,
   size,
@@ -45,33 +37,47 @@ const createRental = async ({
     organization,
     address,
     placement,
-    deliveryDate: toTimestamp(deliveryDate),
-    pickupDate: toTimestamp(pickupDate),
+    deliveryDate,
+    pickupDate,
     agreement: !!agreement,
     status: "pending",
     paid: false,
-    createdAt: serverTimestamp()
+    receiptNo: null,
+    createdAt: serverTimestamp(),
+    lastUpdated: serverTimestamp()
   };
 
   const docRef = await addDoc(rentalsCol, payload);
 
-  // Return something your controller can use
   return { id: docRef.id, ...payload };
 };
 
-const findCurrent = async () => {
-  return [];
+const getCurrentRentals = async () => {
+  const today = new Date().toISOString().split('T')[0]; // "2026-03-21"
+
+  //do not include rentals where today is their pickup date
+  const q = query(
+    rentalsCol,
+    where('deliveryDate', '<=', today),
+    where('pickupDate', '>', today)
+  );
+
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((rentalDoc) => ({
+    id: rentalDoc.id,
+    ...rentalDoc.data()
+  }));
 };
 
-const findHistory = async () => {
-  return [];
+const getAllRentals = async () => {
+  const snapshot = await getDocs(rentalsCol);
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data()
+  }));
 };
 
-const updateStatus = async () => {
-  return null;
-};
-
-const findByUserId = async (userId) => {
+const getUserRentals = async (userId) => {
   const q = query(rentalsCol, where("userId", "==", userId));
 
   const snapshot = await getDocs(q);
@@ -96,7 +102,7 @@ const findById = async (rentalId) => {
 };
 
 const checkAvailability = async (size, deliveryDate) => {
-  const deliveryDateTimestamp = toTimestamp(deliveryDate);
+  const selectedDeliveryDate = deliveryDate;
   let currentSizeRentals = 0;
   let totalRentals = 0;
   let dumpsterInventory = 0;
@@ -104,12 +110,12 @@ const checkAvailability = async (size, deliveryDate) => {
   const rentalQ = query(
     rentalsCol, 
     where("size", "==", size), 
-    where("deliveryDate", "==", deliveryDateTimestamp)
+    where("deliveryDate", "==", selectedDeliveryDate)
   );
 
   const dayQ = query(
     rentalsCol,
-    where("deliveryDate", "==", deliveryDateTimestamp)
+    where("deliveryDate", "==", selectedDeliveryDate)
   );
 
   const dumpsterQ = query(
@@ -153,12 +159,46 @@ const checkAvailability = async (size, deliveryDate) => {
   }
 };
 
+const updateRental = async (rentalId, {
+  size,
+  name,
+  phone,
+  organization = "",
+  address,
+  placement = "",
+  deliveryDate,
+  pickupDate,
+  receiptNo = "",
+  status
+}) => {
+  const today = new Date().toISOString().split('T')[0];
+
+  const payload = {
+    size,
+    name,
+    phone,
+    organization,
+    address,
+    placement,
+    deliveryDate,
+    pickupDate,
+    status,
+    paid: !!receiptNo,
+    receiptNo: receiptNo,
+    lastUpdated: serverTimestamp()
+  };
+
+  const docRef = doc(rentalsCol, rentalId);
+  await updateDoc(docRef, payload);
+  return { id: docRef.id, ...payload };
+};
+
 export {
     createRental,
-    findByUserId,
+    getUserRentals,
     findById,
-    findCurrent,
-    findHistory,
-    updateStatus,
-    checkAvailability
+    getAllRentals,
+    getCurrentRentals,
+    checkAvailability,
+    updateRental
 };

@@ -33,7 +33,8 @@ const createUser = async ({ username, passwordHash, passwordSalt }) => {
         usernameLower: normalizedUsername.toLowerCase(),
         passwordHash,
         passwordSalt,
-        createdAt: serverTimestamp()
+        createdAt: serverTimestamp(),
+        role: 'renter'
     };
 
     const created = await addDoc(usersCollection, payload);
