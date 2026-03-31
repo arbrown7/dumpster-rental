@@ -9,7 +9,8 @@ import {
     getDoc,
     serverTimestamp,
     Timestamp,
-    limit
+    limit,
+    writeBatch
 } from "firebase/firestore";
 import { db } from "../../config/firebase.js";
 
@@ -70,6 +71,36 @@ const getCurrentRentals = async () => {
 };
 
 const getAllRentals = async () => {
+  const now = new Date().toISOString().split('T')[0];
+
+  const completed = await getDocs(
+    query(rentalsCol,
+      where('status', '==', 'pending'),
+      where('paid', '==', true),
+      where('pickupDate', '<', now)
+    )
+  );
+
+  if (!completed.empty) {
+    const batch = writeBatch(db);
+    completed.forEach(doc => batch.update(doc.ref, { status: "completed" }));
+    await batch.commit();
+  }
+
+  const cancelled = await getDocs(
+    query(rentalsCol,
+      where('status', '==', 'pending'),
+      where('paid', '==', false),
+      where('pickupDate', '<', now)
+    )
+  )
+  
+  if (!cancelled.empty) {
+    const batch = writeBatch(db);
+    cancelled.forEach(doc => batch.update(doc.ref, { status: "cancelled" }));
+    await batch.commit();
+  }
+
   const snapshot = await getDocs(rentalsCol);
   return snapshot.docs.map((doc) => ({
     id: doc.id,
