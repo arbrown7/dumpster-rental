@@ -1,0 +1,47 @@
+<%- include('../partials/header') %>
+
+<div class="container py-4">
+    <h1 class="h3 mb-3">Future Rentals</h1>
+    <h3 class="h3 mb-3">Rentals in the upcoming rental period</h3>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Address</th>
+                <th scope="col">Size</th>
+                <th scope="col">Placement Instructions</th>
+                <th scope="col">Delivery Date</th>
+                <th scope="col">Pickup Date</th>
+                <th scope="col">Receipt No.</th>
+                <th scope="col">Creation Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (rentals && rentals.length > 0) { %>
+                <% rentals.forEach(rental => { %>
+                    <tr>
+                        <th scope="row"><%= rental.id %></th>
+                        <td><%= rental.name %></td>
+                        <td><%= rental.phone %></td>
+                        <td><%= rental.address %></td>
+                        <td><%= rental.size %></td>
+                        <td><%= rental.placement %></td>
+                        <td><%= rental.deliveryDate %></td>
+                        <td><%= rental.pickupDate %></td>
+                        <td><%= rental.receiptNo || '-' %></td>
+                        <td><%= rental.creationDate || '-' %></td>
+                    </tr>
+                <% }); %>
+            <% } else { %>
+                <tr>
+                    <td colspan="10" class="text-center">No rentals yet.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<%- include('../partials/footer') %>
