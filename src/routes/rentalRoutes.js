@@ -11,7 +11,8 @@ import {
     showEditRental,
     handleEditRental,
     rentalEditValidation,
-    showMyRentals
+    showMyRentals,
+    showFutureRentals
     //showRentalEditConfirmation
 } from "../controllers/rental/rental.js";
 import {
@@ -30,6 +31,7 @@ rentalRoutes.get("/my-rentals", requireLogin, showMyRentals);
 rentalRoutes.get("/rental", requireLogin, showRentalForm);
 rentalRoutes.post("/rental", requireLogin, rentalValidation, handleRentalSubmission);
 rentalRoutes.get("/rental/current", requireRole('admin'), showCurrentRentals);
+rentalRoutes.get("/rental/future", requireRole('admin'), showFutureRentals);
 rentalRoutes.get("/rental/all", requireRole('admin'), showAllRentals);
 rentalRoutes.get("/rental/:id/edit", requireRole('admin'), showEditRental);
 rentalRoutes.post("/rental/:id/edit", requireRole('admin'), rentalEditValidation, handleEditRental); 

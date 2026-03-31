@@ -59,7 +59,8 @@ const getCurrentRentals = async () => {
   const q = query(
     rentalsCol,
     where('deliveryDate', '<=', today),
-    where('pickupDate', '>', today)
+    where('pickupDate', '>', today),
+    where('paid', '==', true)
   );
 
   const snapshot = await getDocs(q);
@@ -193,6 +194,47 @@ const updateRental = async (rentalId, {
   return { id: docRef.id, ...payload };
 };
 
+const getFutureRentals = async () => {
+  const thursDates = [1, 2, 3]; //days of the week where Thursday will be the next rental
+  const monDates = [0, 4, 5, 6]; //days of the week where Monday will be the next rental
+  const today = new Date();
+  const currDay = today.getDay();
+
+  let q;
+
+  if(thursDates.includes(currDay)) {
+    let timeToNextRental = 4 - currDay;
+    let futureRental = new Date();
+    futureRental.setDate(today.getDate() + timeToNextRental);
+    futureRental = futureRental.toISOString().split('T')[0];
+    
+    q = query(
+      rentalsCol,
+      where('deliveryDate', '<=', futureRental),
+      where('pickupDate', '>', futureRental),
+      where('paid', '==', true)
+    );
+  } else if (monDates.includes(currDay)) {
+    let timeToNextRental = (1 - currDay + 7) % 7;
+    let futureRental = new Date();
+    futureRental.setDate(today.getDate() + timeToNextRental);
+    futureRental = futureRental.toISOString().split('T')[0];
+
+    q = query(
+      rentalsCol,
+      where('deliveryDate', '<=', futureRental),
+      where('pickupDate', '>', futureRental),
+      where('paid', '==', true)
+    );
+  }
+
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((rentalDoc) => ({
+    id: rentalDoc.id,
+    ...rentalDoc.data()
+  }));
+};
+
 export {
     createRental,
     getUserRentals,
@@ -200,5 +242,6 @@ export {
     getAllRentals,
     getCurrentRentals,
     checkAvailability,
-    updateRental
+    updateRental,
+    getFutureRentals
 };

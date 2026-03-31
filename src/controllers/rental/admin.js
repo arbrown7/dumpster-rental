@@ -3,7 +3,8 @@ import {
     findById,
     getAllRentals,
     getCurrentRentals,
-    updateRental
+    updateRental,
+    getFutureRentals
 } from '../../models/rental/rental.js'; 
 import {
     formatDateTime
@@ -144,9 +145,32 @@ const handleEditRental = async (req, res) => {
 //     }
 // };
 
+const showFutureRentals = async (req, res) => {
+    if (!req.session.user) {
+        req.flash('error', 'You must be logged in');
+        return res.redirect('/login');
+    }
+
+    let futureRentals = [];
+
+    try {
+        futureRentals = await getFutureRentals();
+    } catch (error) {
+        console.error('Error retrieving rentals:', error);
+    }
+
+    res.render('rental/list', { 
+        rentals: futureRentals, 
+        title: 'Future Rentals', 
+        emptyMessage: 'No future rentals to show.' 
+    });
+
+};
+
 export {
     showAllRentals,
     showCurrentRentals,
     showEditRental,
-    handleEditRental
+    handleEditRental,
+    showFutureRentals
 }
