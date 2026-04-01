@@ -2,6 +2,16 @@
 <%# Expected locals: rentals (array), title (string), emptyMessage (string, optional) %>
 <%- include('../partials/header') %>
 <div class="container py-4">
+  <%
+    const formatTableDate = (value) => {
+      if (!value) return '—';
+      if (typeof value === 'string') return value.length >= 5 ? value.slice(5) : value;
+      if (typeof value.toDate === 'function') {
+        return value.toDate().toISOString().split('T')[0].slice(5);
+      }
+      return String(value);
+    };
+  %>
 
   <%# Page Header %>
   <div class="d-flex align-items-center justify-content-between mb-4">
@@ -16,76 +26,6 @@
     <% } %>
   </div>
 
-  <%# Search & Filter (admin only) %>
-  <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
-    <%
-      const f = typeof filters !== 'undefined' ? filters : {};
-      const fSearch = f.search || '';
-      const fStatus = f.status || '';
-      const fPaid   = f.paid   || '';
-      const fSize   = f.size   || '';
-    %>
-    <form method="GET" class="mb-4">
-      <div class="row g-2 align-items-center">
-
-        <div class="col-12 col-md-4">
-          <div class="input-group">
-            <span class="input-group-text bg-white border-end-0">
-              <i class="bi bi-search text-muted"></i>
-            </span>
-            <input
-              type="text"
-              name="search"
-              class="form-control border-start-0"
-              placeholder="Search name, phone, address…"
-              value="<%= fSearch %>"
-            >
-          </div>
-        </div>
-
-        <% if (typeof showStatusFilter === 'undefined' || showStatusFilter) { %>
-          <div class="col-6 col-md-2">
-            <select name="status" class="form-select">
-              <option value="">All Statuses</option>
-              <option value="pending"   <%= fStatus === 'pending'   ? 'selected' : '' %>>Pending</option>
-              <option value="active"    <%= fStatus === 'active'    ? 'selected' : '' %>>Active</option>
-              <option value="completed" <%= fStatus === 'completed' ? 'selected' : '' %>>Completed</option>
-              <option value="cancelled" <%= fStatus === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
-            </select>
-          </div>
-        <% } %>
-
-        <% if (typeof showPaidFilter === 'undefined' || showPaidFilter) { %>
-          <div class="col-6 col-md-2">
-            <select name="paid" class="form-select">
-              <option value="">All — Paid/Unpaid</option>
-              <option value="true"  <%= fPaid === 'true'  ? 'selected' : '' %>>Paid</option>
-              <option value="false" <%= fPaid === 'false' ? 'selected' : '' %>>Unpaid</option>
-            </select>
-          </div>
-        <% } %>
-
-        <div class="col-6 col-md-2">
-          <select name="size" class="form-select">
-            <option value="">All Sizes</option>
-            <option value="20yard" <%= fSize === '20yard' ? 'selected' : '' %>>20 Yard</option>
-            <option value="30yard" <%= fSize === '30yard' ? 'selected' : '' %>>30 Yard</option>
-          </select>
-        </div>
-
-        <div class="col-6 col-md-2 d-flex gap-2">
-          <button type="submit" class="btn btn-primary flex-grow-1">
-            <i class="bi bi-funnel me-1"></i>Filter
-          </button>
-          <a href="<%= typeof clearFiltersUrl !== 'undefined' ? clearFiltersUrl : '/rental/all' %>" class="btn btn-outline-secondary" title="Clear filters">
-            <i class="bi bi-x-lg"></i>
-          </a>
-        </div>
-
-      </div>
-    </form>
-  <% } %>
-
   <%# Empty State %>
   <% if (!rentals || rentals.length === 0) { %>
     <div class="text-center py-5 text-muted">
@@ -95,7 +35,9 @@
 
   <%# Rentals Table %>
   <% } else { %>
-    <input type="text" id="rentalSearch" class="form-control mb-3" placeholder="Search by name or address..." />
+    <% if (typeof enableRowSearch !== 'undefined' && enableRowSearch) { %>
+      <input type="text" id="rentalSearch" class="form-control mb-3" placeholder="Search by name or address..." />
+    <% } %>
     <div class="card shadow-sm border-0">
       <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -143,7 +85,7 @@
           </thead>
           <tbody>
             <% rentals.forEach(function(rental) { %>
-              <tr data-name="<%= rental.name %>" data-address="<%= rental.address %>">
+              <tr data-name="<%= rental.name || '' %>" data-address="<%= rental.address || '' %>">
                 <%# Customer Info %>
                 <td>
                   <div class="fw-semibold"><%= rental.name %></div>
@@ -171,7 +113,7 @@
                 <%# Delivery Date %>
                 <td>
                   <% if (rental.deliveryDate) { %>
-                    <i class="bi bi-truck me-1 text-muted"></i><%= rental.deliveryDate.slice(5) %>
+                    <i class="bi bi-truck me-1 text-muted"></i><%= formatTableDate(rental.deliveryDate) %>
                   <% } else { %>
                     <span class="text-muted">—</span>
                   <% } %>
@@ -180,7 +122,7 @@
                 <%# Pickup Date %>
                 <td>
                   <% if (rental.pickupDate) { %>
-                    <i class="bi bi-calendar-check me-1 text-muted"></i><%= rental.pickupDate.slice(5) %>
+                    <i class="bi bi-calendar-check me-1 text-muted"></i><%= formatTableDate(rental.pickupDate) %>
                   <% } else { %>
                     <span class="text-muted">—</span>
                   <% } %>

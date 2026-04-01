@@ -26,25 +26,12 @@ const showAllRentals = async (req, res) => {
         console.error('Error retrieving rentals:', error);
     }
 
-    if (search) {
-        const q = search.toLowerCase();
-        rentals = rentals.filter(r =>
-            (r.name && r.name.toLowerCase().includes(q)) ||
-            (r.phone && r.phone.toLowerCase().includes(q)) ||
-            (r.address && r.address.toLowerCase().includes(q)) ||
-            (r.organization && r.organization.toLowerCase().includes(q))
-        );
-    }
-    if (status) rentals = rentals.filter(r => r.status === status);
-    if (paid === 'true')  rentals = rentals.filter(r => r.paid === true);
-    if (paid === 'false') rentals = rentals.filter(r => r.paid === false);
-    if (size)   rentals = rentals.filter(r => r.size === size);
-
     res.render('rental/list', { 
         rentals, 
         title: 'All Rentals',
         sort: sort,
-        order: order
+        order: order,
+        enableRowSearch: true
     });
 
 };
@@ -55,7 +42,8 @@ const showCurrentRentals = async (req, res) => {
         return res.redirect('/login');
     }
 
-    const { search = '', size = '' } = req.query;
+    const sort = req.query.sort || "delivery";
+    const order = req.query.order || "asc";
 
     let activeRentals = [];
 
@@ -65,26 +53,13 @@ const showCurrentRentals = async (req, res) => {
         console.error('Error retrieving rentals:', error);
     }
 
-    if (search) {
-        const q = search.toLowerCase();
-        activeRentals = activeRentals.filter(r =>
-            (r.name && r.name.toLowerCase().includes(q)) ||
-            (r.phone && r.phone.toLowerCase().includes(q)) ||
-            (r.address && r.address.toLowerCase().includes(q)) ||
-            (r.organization && r.organization.toLowerCase().includes(q))
-        );
-    }
-    if (size) activeRentals = activeRentals.filter(r => r.size === size);
-
     res.render('rental/list', { 
         rentals: activeRentals, 
         title: 'Current Rentals', 
         emptyMessage: 'No active rentals right now.',
         isAdmin: true,
-        filters: { search, status: 'active', paid: 'true', size },
-        clearFiltersUrl: '/rental/current',
-        showStatusFilter: false,
-        showPaidFilter: false
+        sort,
+        order
     });
 
 };
@@ -187,7 +162,8 @@ const showFutureRentals = async (req, res) => {
         return res.redirect('/login');
     }
 
-    const { search = '', size = '' } = req.query;
+    const sort = req.query.sort || "delivery";
+    const order = req.query.order || "asc";
 
     let futureRentals = [];
 
@@ -197,27 +173,13 @@ const showFutureRentals = async (req, res) => {
         console.error('Error retrieving rentals:', error);
     }
 
-
-    if (search) {
-        const q = search.toLowerCase();
-        futureRentals = futureRentals.filter(r =>
-            (r.name && r.name.toLowerCase().includes(q)) ||
-            (r.phone && r.phone.toLowerCase().includes(q)) ||
-            (r.address && r.address.toLowerCase().includes(q)) ||
-            (r.organization && r.organization.toLowerCase().includes(q))
-        );
-    }
-    if (size) futureRentals = futureRentals.filter(r => r.size === size);
-
     res.render('rental/list', { 
         rentals: futureRentals, 
         title: 'Future Rentals', 
         emptyMessage: 'No future rentals to show.',
         isAdmin: true,
-        filters: { search, status: '', paid: '', size },
-        clearFiltersUrl: '/rental/future',
-        showStatusFilter: false,
-        showPaidFilter: false
+        sort,
+        order
     });
 
 };
