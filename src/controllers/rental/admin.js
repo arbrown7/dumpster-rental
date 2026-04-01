@@ -16,17 +16,21 @@ const showAllRentals = async (req, res) => {
         return res.redirect('/login');
     }
 
+    const sort = req.query.sort || "delivery";
+    const order = req.query.order || "asc";
     let rentals = [];
 
     try {
-        rentals = await getAllRentals();
+        rentals = await getAllRentals(sort, order);
     } catch (error) {
         console.error('Error retrieving rentals:', error);
     }
 
     res.render('rental/list', { 
         rentals, 
-        title: 'All Rentals'
+        title: 'All Rentals',
+        sort: sort,
+        order: order
     });
 
 };

@@ -1,7 +1,8 @@
 import { 
     collection, 
     query, 
-    where, 
+    where,
+    orderBy, 
     getDocs, 
     addDoc,
     updateDoc,
@@ -71,8 +72,18 @@ const getCurrentRentals = async () => {
   }));
 };
 
-const getAllRentals = async () => {
+const getAllRentals = async (sort = 'delivery', order = 'asc') => {
   const now = new Date().toISOString().split('T')[0];
+  const sortBy =
+    sort === 'name' ? 'name' :
+    sort === 'org' ? 'organization' :
+    sort === 'paid' ? 'paid' :
+    sort === 'pickup' ? 'pickupDate' :
+    sort === 'status' ? 'status' :
+    sort === 'size' ? 'size' :
+    'deliveryDate';
+  const sortOrder = 
+    order === 'asc' ? 'asc' : 'desc';
 
   const completed = await getDocs(
     query(rentalsCol,
@@ -102,7 +113,11 @@ const getAllRentals = async () => {
     await batch.commit();
   }
 
-  const snapshot = await getDocs(rentalsCol);
+  const snapshot = await getDocs(
+    query(rentalsCol,
+      orderBy(sortBy, sortOrder)
+    )
+  );
   return snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data()

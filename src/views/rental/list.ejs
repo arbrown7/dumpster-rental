@@ -31,13 +31,43 @@
         <table class="table table-hover align-middle mb-0">
           <thead class="table-light">
             <tr>
-              <th scope="col">Customer</th>
+              <th scope="col">
+                <a href="?sort=name&order=<%= sort === 'name' && order === 'asc' ? 'desc' : 'asc' %>" 
+                  class="text-decoration-none <%= sort === 'name' ? 'text-primary fw-semibold' : 'text-reset' %>">
+                  Customer <i class="bi bi-arrow-<%= sort === 'name' ? (order === 'asc' ? 'up' : 'down') : 'down-up' %>"></i>
+                </a>
+              </th>
               <th scope="col">Address</th>
-              <th scope="col">Size</th>
-              <th scope="col">Delivery</th>
-              <th scope="col">Pickup</th>
-              <th scope="col">Status</th>
-              <th scope="col">Paid</th>
+              <th scope="col">
+                <a href="?sort=size&order=<%= sort === 'size' && order === 'asc' ? 'desc' : 'asc' %>" 
+                  class="text-decoration-none <%= sort === 'size' ? 'text-primary fw-semibold' : 'text-reset' %>">
+                  Size <i class="bi bi-arrow-<%= sort === 'size' ? (order === 'asc' ? 'up' : 'down') : 'down-up' %>"></i>
+                </a>
+              </th>
+              <th scope="col">
+                <a href="?sort=delivery&order=<%= sort === 'delivery' && order === 'asc' ? 'desc' : 'asc' %>" 
+                  class="text-decoration-none <%= sort === 'delivery' ? 'text-primary fw-semibold' : 'text-reset' %>">
+                  Delivery <i class="bi bi-arrow-<%= sort === 'delivery' ? (order === 'asc' ? 'up' : 'down') : 'down-up' %>"></i>
+                </a>
+              </th>
+              <th scope="col">
+                <a href="?sort=pickup&order=<%= sort === 'pickup' && order === 'asc' ? 'desc' : 'asc' %>" 
+                  class="text-decoration-none <%= sort === 'pickup' ? 'text-primary fw-semibold' : 'text-reset' %>">
+                  Pickup <i class="bi bi-arrow-<%= sort === 'pickup' ? (order === 'asc' ? 'up' : 'down') : 'down-up' %>"></i>
+                </a>
+              </th>
+              <th scope="col">
+                <a href="?sort=status&order=<%= sort === 'status' && order === 'asc' ? 'desc' : 'asc' %>" 
+                  class="text-decoration-none <%= sort === 'status' ? 'text-primary fw-semibold' : 'text-reset' %>">
+                  Status <i class="bi bi-arrow-<%= sort === 'status' ? (order === 'asc' ? 'up' : 'down') : 'down-up' %>"></i>
+                </a>
+              </th>
+              <th scope="col">
+                <a href="?sort=paid&order=<%= sort === 'paid' && order === 'asc' ? 'desc' : 'asc' %>" 
+                  class="text-decoration-none <%= sort === 'paid' ? 'text-primary fw-semibold' : 'text-reset' %>">
+                  Paid <i class="bi bi-arrow-<%= sort === 'paid' ? (order === 'asc' ? 'up' : 'down') : 'down-up' %>"></i>
+                </a>
+              </th>
               <th scope="col" class="text-end">Actions</th>
             </tr>
           </thead>
@@ -54,7 +84,7 @@
                 </td>
 
                 <%# Address & Placement %>
-                <td>
+                <td class="text-wrap" style="max-width: 180px;">
                   <div><%= rental.address %></div>
                   <% if (rental.placement) { %>
                     <div class="text-muted small">
@@ -71,7 +101,7 @@
                 <%# Delivery Date %>
                 <td>
                   <% if (rental.deliveryDate) { %>
-                    <i class="bi bi-truck me-1 text-muted"></i><%= rental.deliveryDate %>
+                    <i class="bi bi-truck me-1 text-muted"></i><%= rental.deliveryDate.slice(5) %>
                   <% } else { %>
                     <span class="text-muted">—</span>
                   <% } %>
@@ -80,7 +110,7 @@
                 <%# Pickup Date %>
                 <td>
                   <% if (rental.pickupDate) { %>
-                    <i class="bi bi-calendar-check me-1 text-muted"></i><%= rental.pickupDate %>
+                    <i class="bi bi-calendar-check me-1 text-muted"></i><%= rental.pickupDate.slice(5) %>
                   <% } else { %>
                     <span class="text-muted">—</span>
                   <% } %>
