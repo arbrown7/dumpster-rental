@@ -218,8 +218,6 @@ const updateRental = async (rentalId, {
   receiptNo = "",
   status
 }) => {
-  const today = new Date().toISOString().split('T')[0];
-
   const payload = {
     size,
     name,

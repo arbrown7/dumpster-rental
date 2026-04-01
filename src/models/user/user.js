@@ -1,9 +1,12 @@
 import {
     addDoc,
     collection,
+    doc,
+    getDoc,
     getDocs,
     query,
     serverTimestamp,
+    updateDoc,
     where
 } from "firebase/firestore";
 import { db } from "../../config/firebase.js";
@@ -44,4 +47,38 @@ const createUser = async ({ username, passwordHash, passwordSalt }) => {
     };
 };
 
-export { findUserByUsername, createUser };
+const findUserById = async (userId) => {
+    const userRef = doc(usersCollection, userId);
+    const snapshot = await getDoc(userRef);
+
+    if (!snapshot.exists()) {
+        return null;
+    }
+
+    return {
+        id: snapshot.id,
+        ...snapshot.data()
+    };
+};
+
+const updateUser = async (userId, { username, passwordHash, passwordSalt }) => {
+    const userRef = doc(usersCollection, userId);
+
+    const payload = {
+        lastUpdated: serverTimestamp()
+    };
+
+    if (username !== undefined) {
+        payload.username = username.trim();
+        payload.usernameLower = username.trim().toLowerCase();
+    }
+    if (passwordHash !== undefined) {
+        payload.passwordHash = passwordHash;
+        payload.passwordSalt = passwordSalt;
+    }
+
+    await updateDoc(userRef, payload);
+    return payload;
+};
+
+export { findUserByUsername, findUserById, createUser, updateUser };
