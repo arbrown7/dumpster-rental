@@ -225,6 +225,16 @@ const updateRental = async (rentalId, {
   return { id: docRef.id, ...payload };
 };
 
+const checkHistory = async (userId) => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const yearStart = `${year}-01-01`;
+
+  const q = query(
+    rentalsCol, 
+    where("userId", "==", userId),
+    where("deliveryDate", ">=", yearStart)
+  );
 const getFutureRentals = async () => {
   const thursDates = [1, 2, 3]; //days of the week where Thursday will be the next rental
   const monDates = [0, 4, 5, 6]; //days of the week where Monday will be the next rental
@@ -274,5 +284,6 @@ export {
     getCurrentRentals,
     checkAvailability,
     updateRental,
+    checkHistory,
     getFutureRentals
 };

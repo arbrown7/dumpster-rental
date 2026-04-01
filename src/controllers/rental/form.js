@@ -1,7 +1,8 @@
 import { validationResult } from 'express-validator';
 import {
     createRental,
-    findById
+    findById,
+    checkHistory
 } from '../../models/rental/rental.js'; 
 import {
     formatDate
@@ -32,6 +33,12 @@ const handleRentalSubmission = async (req, res) => {
             errors: errors.array(),
             form: req.body
         });
+    }
+
+    const rentalHistory = await checkHistory(req.session.user.id);
+    if (rentalHistory.length >= 3) {
+        req.flash('error', 'You cannot reserve more than 3 rentals per calendar year.');
+        return res.redirect('/');
     }
 
     const rentalInput = {

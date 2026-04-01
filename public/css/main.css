@@ -57,6 +57,43 @@ body {
 	font-weight: 600;
 }
 
+.flash-messages {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 380px;
+}
+
+.flash {
+    padding: 0.85rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    border-left: 4px solid transparent;
+    animation: slideIn 0.2s ease;
+}
+
+.flash.error {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border-left-color: #ef4444;
+}
+
+.flash.success {
+    background-color: #f0fdf4;
+    color: #166534;
+    border-left-color: #22c55e;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(1rem); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
 .site-footer {
 	background: var(--card) !important;
 	color: var(--muted);
