@@ -45,28 +45,44 @@
                 </a>
               </th>
               <th scope="col">
-                <a href="?sort=delivery&order=<%= sort === 'delivery' && order === 'asc' ? 'desc' : 'asc' %>" 
+                <% if (isCurrent || isFuture) { %>
+                  Delivery
+                <% } else { %>
+                  <a href="?sort=delivery&order=<%= sort === 'delivery' && order === 'asc' ? 'desc' : 'asc' %>" 
                   class="text-decoration-none <%= sort === 'delivery' ? 'text-primary fw-semibold' : 'text-reset' %>">
                   Delivery <i class="bi bi-arrow-<%= sort === 'delivery' ? (order === 'asc' ? 'up' : 'down') : 'down-up' %>"></i>
-                </a>
+                  </a>
+                <% } %>
               </th>
               <th scope="col">
+              <% if (isCurrent || isFuture) { %>
+                  Pickup
+              <% } else { %>
                 <a href="?sort=pickup&order=<%= sort === 'pickup' && order === 'asc' ? 'desc' : 'asc' %>" 
                   class="text-decoration-none <%= sort === 'pickup' ? 'text-primary fw-semibold' : 'text-reset' %>">
                   Pickup <i class="bi bi-arrow-<%= sort === 'pickup' ? (order === 'asc' ? 'up' : 'down') : 'down-up' %>"></i>
                 </a>
+              <% } %>
               </th>
               <th scope="col">
-                <a href="?sort=status&order=<%= sort === 'status' && order === 'asc' ? 'desc' : 'asc' %>" 
-                  class="text-decoration-none <%= sort === 'status' ? 'text-primary fw-semibold' : 'text-reset' %>">
-                  Status <i class="bi bi-arrow-<%= sort === 'status' ? (order === 'asc' ? 'up' : 'down') : 'down-up' %>"></i>
-                </a>
+                <% if (isCurrent || isFuture) { %>
+                  Status
+                <% } else { %>
+                  <a href="?sort=status&order=<%= sort === 'status' && order === 'asc' ? 'desc' : 'asc' %>" 
+                    class="text-decoration-none <%= sort === 'status' ? 'text-primary fw-semibold' : 'text-reset' %>">
+                    Status <i class="bi bi-arrow-<%= sort === 'status' ? (order === 'asc' ? 'up' : 'down') : 'down-up' %>"></i>
+                  </a>
+                <% } %>
               </th>
               <th scope="col">
+                <% if (isCurrent || isFuture) { %>
+                  Paid
+                <% } else { %>
                 <a href="?sort=paid&order=<%= sort === 'paid' && order === 'asc' ? 'desc' : 'asc' %>" 
                   class="text-decoration-none <%= sort === 'paid' ? 'text-primary fw-semibold' : 'text-reset' %>">
                   Paid <i class="bi bi-arrow-<%= sort === 'paid' ? (order === 'asc' ? 'up' : 'down') : 'down-up' %>"></i>
                 </a>
+                <% } %>
               </th>
               <th scope="col" class="text-end">Actions</th>
             </tr>
