@@ -16,12 +16,12 @@ const showAllRentals = async (req, res) => {
         return res.redirect('/login');
     }
 
-    const { search = '', status = '', paid = '', size = '' } = req.query;
-
+    const sort = req.query.sort || "delivery";
+    const order = req.query.order || "asc";
     let rentals = [];
 
     try {
-        rentals = await getAllRentals();
+        rentals = await getAllRentals(sort, order);
     } catch (error) {
         console.error('Error retrieving rentals:', error);
     }
@@ -43,11 +43,8 @@ const showAllRentals = async (req, res) => {
     res.render('rental/list', { 
         rentals, 
         title: 'All Rentals',
-        isAdmin: true,
-        filters: { search, status, paid, size },
-        clearFiltersUrl: '/rental/all',
-        showStatusFilter: true,
-        showPaidFilter: true
+        sort: sort,
+        order: order
     });
 
 };
