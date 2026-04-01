@@ -59,16 +59,18 @@
     });
   });
 
-  document.getElementById('rentalSearch').addEventListener('input', function () {
+  const rentalSearchInput = document.getElementById('rentalSearch');
+  if (rentalSearchInput) {
+    rentalSearchInput.addEventListener('input', function () {
       const term = this.value.toLowerCase();
       const rows = document.querySelectorAll('tr[data-name]');
-      console.log('Search term:', term);
-      console.log('Rows found:', rows.length);
+
       rows.forEach(row => {
-          console.log('Row data-name:', row.dataset.name, 'data-address:', row.dataset.address);
-          const name = row.dataset.name.toLowerCase();
-          const address = row.dataset.address.toLowerCase();
-          row.style.display = (name.includes(term) || address.includes(term)) ? '' : 'none';
+        const name = (row.dataset.name || '').toLowerCase();
+        const address = (row.dataset.address || '').toLowerCase();
+        row.style.display = (name.includes(term) || address.includes(term)) ? '' : 'none';
       });
-  });
+    });
+  }
+
 });

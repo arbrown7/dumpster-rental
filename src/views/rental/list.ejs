@@ -2,6 +2,16 @@
 <%# Expected locals: rentals (array), title (string), emptyMessage (string, optional) %>
 <%- include('../partials/header') %>
 <div class="container py-4">
+  <%
+    const formatTableDate = (value) => {
+      if (!value) return '—';
+      if (typeof value === 'string') return value.length >= 5 ? value.slice(5) : value;
+      if (typeof value.toDate === 'function') {
+        return value.toDate().toISOString().split('T')[0].slice(5);
+      }
+      return String(value);
+    };
+  %>
 
   <%# Page Header %>
   <div class="d-flex align-items-center justify-content-between mb-4">
@@ -25,7 +35,9 @@
 
   <%# Rentals Table %>
   <% } else { %>
-    <input type="text" id="rentalSearch" class="form-control mb-3" placeholder="Search by name or address..." />
+    <% if (typeof enableRowSearch !== 'undefined' && enableRowSearch) { %>
+      <input type="text" id="rentalSearch" class="form-control mb-3" placeholder="Search by name or address..." />
+    <% } %>
     <div class="card shadow-sm border-0">
       <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -89,7 +101,7 @@
           </thead>
           <tbody>
             <% rentals.forEach(function(rental) { %>
-              <tr data-name="<%= rental.name %>" data-address="<%= rental.address %>">
+              <tr data-name="<%= rental.name || '' %>" data-address="<%= rental.address || '' %>">
                 <%# Customer Info %>
                 <td>
                   <div class="fw-semibold"><%= rental.name %></div>
@@ -117,7 +129,7 @@
                 <%# Delivery Date %>
                 <td>
                   <% if (rental.deliveryDate) { %>
-                    <i class="bi bi-truck me-1 text-muted"></i><%= rental.deliveryDate.slice(5) %>
+                    <i class="bi bi-truck me-1 text-muted"></i><%= formatTableDate(rental.deliveryDate) %>
                   <% } else { %>
                     <span class="text-muted">—</span>
                   <% } %>
@@ -126,7 +138,7 @@
                 <%# Pickup Date %>
                 <td>
                   <% if (rental.pickupDate) { %>
-                    <i class="bi bi-calendar-check me-1 text-muted"></i><%= rental.pickupDate.slice(5) %>
+                    <i class="bi bi-calendar-check me-1 text-muted"></i><%= formatTableDate(rental.pickupDate) %>
                   <% } else { %>
                     <span class="text-muted">—</span>
                   <% } %>

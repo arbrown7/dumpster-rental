@@ -2,7 +2,7 @@
 
 A web application for Draper City residents to reserve dumpsters for residential clean-up projects. Built as a capstone project for WDD499.
 
-🔗 **Live Demo:** [dumpter-rental.onrender.com]([https://dumpster-rental.onrender.com])
+**Live Demo:** [dumpter-rental.onrender.com]([https://dumpster-rental.onrender.com])
 
 ---
 

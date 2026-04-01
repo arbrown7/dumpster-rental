@@ -1,0 +1,96 @@
+<%- include('../partials/header') %>
+
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h1 class="h3 mb-1">My Profile</h1>
+                        <p class="text-muted mb-4">Update your username or password.</p>
+
+                        <% if (successMessage) { %>
+                            <div class="alert alert-success" role="alert">
+                                <i class="bi bi-check-circle me-1"></i><%= successMessage %>
+                            </div>
+                        <% } %>
+
+                        <% if (errors && errors.length) { %>
+                            <div class="alert alert-danger" role="alert">
+                                <ul class="mb-0">
+                                    <% errors.forEach((error) => { %>
+                                        <li><%= error.msg %></li>
+                                    <% }); %>
+                                </ul>
+                            </div>
+                        <% } %>
+
+                        <form action="/profile" method="POST" class="vstack gap-4">
+
+                            <%# Account Info %>
+                            <div>
+                                <h2 class="h6 text-uppercase text-muted fw-semibold mb-3">Account Info</h2>
+
+                                <div class="vstack gap-3">
+                                    <div>
+                                        <label class="form-label" for="username">Username</label>
+                                        <input
+                                            class="form-control"
+                                            type="text"
+                                            id="username"
+                                            name="username"
+                                            value="<%= user?.username || '' %>"
+                                            autocomplete="username"
+                                            required
+                                        >
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                            <%# Change Password %>
+                            <div>
+                                <h2 class="h6 text-uppercase text-muted fw-semibold mb-1">Change Password</h2>
+                                <p class="text-muted small mb-3">Leave blank to keep your current password.</p>
+
+                                <div class="vstack gap-3">
+                                    <div>
+                                        <label class="form-label" for="newPassword">New Password</label>
+                                        <input
+                                            class="form-control"
+                                            type="password"
+                                            id="newPassword"
+                                            name="newPassword"
+                                            autocomplete="new-password"
+                                            placeholder="Min. 8 characters"
+                                        >
+                                    </div>
+
+                                    <div>
+                                        <label class="form-label" for="currentPassword">
+                                            Current Password
+                                            <span class="text-muted fw-normal">(required to change password)</span>
+                                        </label>
+                                        <input
+                                            class="form-control"
+                                            type="password"
+                                            id="currentPassword"
+                                            name="currentPassword"
+                                            autocomplete="current-password"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary" type="submit">Save Changes</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

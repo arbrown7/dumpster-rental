@@ -227,8 +227,6 @@ const updateRental = async (rentalId, {
   receiptNo = "",
   status
 }) => {
-  const today = new Date().toISOString().split('T')[0];
-
   const payload = {
     size,
     name,
@@ -249,7 +247,25 @@ const updateRental = async (rentalId, {
   return { id: docRef.id, ...payload };
 };
 
-const getFutureRentals = async (sort = 'delivery', order = 'asc') => {
+const checkHistory = async (userId) => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const yearStart = `${year}-01-01`;
+
+  const q = query(
+    rentalsCol, 
+    where("userId", "==", userId),
+    where("deliveryDate", ">=", yearStart)
+  );
+    
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((rentalDoc) => ({
+    id: rentalDoc.id,
+    ...rentalDoc.data()
+  }));
+};
+
+const getFutureRentals = async () => {
   const thursDates = [1, 2, 3]; //days of the week where Thursday will be the next rental
   const monDates = [0, 4, 5, 6]; //days of the week where Monday will be the next rental
   const today = new Date();
@@ -306,5 +322,6 @@ export {
     getCurrentRentals,
     checkAvailability,
     updateRental,
+    checkHistory,
     getFutureRentals
 };

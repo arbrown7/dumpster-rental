@@ -24,7 +24,8 @@
               <li><a href="/login">Login</a></li>
               <li><a href="/register">Create Account</a></li>
             <% } else { %>
-              <li><a href="/dashboard">My Rentals</a></li>
+              <li><a href="/my-rentals">My Rentals</a></li>
+              <li><a href="/profile">Profile</a></li>
               <li><a href="/logout">Logout</a></li>
             <% } %>
           </ul>
@@ -41,6 +42,15 @@
   </footer>
 
   <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+    setTimeout(() => {
+      document.querySelectorAll('.flash').forEach(el => {
+          el.style.transition = 'opacity 0.4s';
+          el.style.opacity = '0';
+          setTimeout(() => el.remove(), 400);
+      });
+    }, 4000);
+  </script>
 
   </body>
 

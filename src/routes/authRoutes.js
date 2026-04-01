@@ -10,6 +10,12 @@ import {
     loginValidation,
     logoutUser
 } from "../controllers/auth/login.js";
+import {
+    showProfilePage,
+    handleProfileUpdate,
+    profileValidation
+} from "../controllers/auth/profile.js";
+import { requireLogin } from "../middleware/auth.js";
 
 const authRoutes = Router();
 
@@ -18,5 +24,7 @@ authRoutes.post("/register", registerValidation, registerUser);
 authRoutes.get("/login", showLoginPage);
 authRoutes.post("/login", loginValidation, loginUser);
 authRoutes.get("/logout", logoutUser);
+authRoutes.get("/profile", requireLogin, showProfilePage);
+authRoutes.post("/profile", requireLogin, profileValidation, handleProfileUpdate);
 
 export default authRoutes;
