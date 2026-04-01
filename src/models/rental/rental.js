@@ -54,15 +54,24 @@ const createRental = async ({
   return { id: docRef.id, ...payload };
 };
 
-const getCurrentRentals = async () => {
+const getCurrentRentals = async (sort = 'delivery', order = 'asc') => {
   const today = new Date().toISOString().split('T')[0]; // "2026-03-21"
+
+  const sortBy =
+    sort === 'name' ? 'name' :
+    sort === 'org' ? 'organization' :
+    sort === 'size' ? 'size' :
+    'deliveryDate';
+  const sortOrder = 
+    order === 'asc' ? 'asc' : 'desc';
 
   //do not include rentals where today is their pickup date
   const q = query(
     rentalsCol,
     where('deliveryDate', '<=', today),
     where('pickupDate', '>', today),
-    where('paid', '==', true)
+    where('paid', '==', true),
+    orderBy(sortBy, sortOrder)
   );
 
   const snapshot = await getDocs(q);
@@ -72,7 +81,7 @@ const getCurrentRentals = async () => {
   }));
 };
 
-const getAllRentals = async (sort = 'delivery', order = 'asc') => {
+const getAllRentals = async (sort = 'delivery', order = 'desc') => {
   const now = new Date().toISOString().split('T')[0];
   const sortBy =
     sort === 'name' ? 'name' :
@@ -261,6 +270,14 @@ const getFutureRentals = async () => {
   const monDates = [0, 4, 5, 6]; //days of the week where Monday will be the next rental
   const today = new Date();
   const currDay = today.getDay();
+
+  const sortBy =
+    sort === 'name' ? 'name' :
+    sort === 'org' ? 'organization' :
+    sort === 'size' ? 'size' :
+    'deliveryDate';
+  const sortOrder = 
+    order === 'asc' ? 'asc' : 'desc';
 
   let q;
 

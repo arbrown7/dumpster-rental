@@ -17,7 +17,7 @@ const showAllRentals = async (req, res) => {
     }
 
     const sort = req.query.sort || "delivery";
-    const order = req.query.order || "asc";
+    const order = req.query.order || "desc";
     let rentals = [];
 
     try {
@@ -31,7 +31,8 @@ const showAllRentals = async (req, res) => {
         title: 'All Rentals',
         sort: sort,
         order: order,
-        enableRowSearch: true
+        isFuture: false,
+        isCurrent: false 
     });
 
 };
@@ -44,11 +45,10 @@ const showCurrentRentals = async (req, res) => {
 
     const sort = req.query.sort || "delivery";
     const order = req.query.order || "asc";
-
     let activeRentals = [];
 
     try {
-        activeRentals = await getCurrentRentals();
+        activeRentals = await getCurrentRentals(sort, order);
     } catch (error) {
         console.error('Error retrieving rentals:', error);
     }
@@ -57,9 +57,10 @@ const showCurrentRentals = async (req, res) => {
         rentals: activeRentals, 
         title: 'Current Rentals', 
         emptyMessage: 'No active rentals right now.',
-        isAdmin: true,
-        sort,
-        order
+        sort: sort,
+        order: order,
+        isFuture: false,
+        isCurrent: true  
     });
 
 };
@@ -164,11 +165,10 @@ const showFutureRentals = async (req, res) => {
 
     const sort = req.query.sort || "delivery";
     const order = req.query.order || "asc";
-
     let futureRentals = [];
 
     try {
-        futureRentals = await getFutureRentals();
+        futureRentals = await getFutureRentals(sort, order);
     } catch (error) {
         console.error('Error retrieving rentals:', error);
     }
@@ -177,9 +177,10 @@ const showFutureRentals = async (req, res) => {
         rentals: futureRentals, 
         title: 'Future Rentals', 
         emptyMessage: 'No future rentals to show.',
-        isAdmin: true,
-        sort,
-        order
+        sort: sort,
+        order: order,
+        isFuture: true,
+        isCurrent: false 
     });
 
 };
