@@ -224,6 +224,24 @@ const updateRental = async (rentalId, {
   return { id: docRef.id, ...payload };
 };
 
+const checkHistory = async (userId) => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const yearStart = `${year}-01-01`;
+
+  const q = query(
+    rentalsCol, 
+    where("userId", "==", userId),
+    where("deliveryDate", ">=", yearStart)
+  );
+
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((rentalDoc) => ({
+    id: rentalDoc.id,
+    ...rentalDoc.data()
+  }));
+};
+
 export {
     createRental,
     getUserRentals,
@@ -231,5 +249,6 @@ export {
     getAllRentals,
     getCurrentRentals,
     checkAvailability,
-    updateRental
+    updateRental,
+    checkHistory
 };
