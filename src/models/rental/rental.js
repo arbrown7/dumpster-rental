@@ -250,6 +250,14 @@ const checkHistory = async (userId) => {
     where("userId", "==", userId),
     where("deliveryDate", ">=", yearStart)
   );
+    
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((rentalDoc) => ({
+    id: rentalDoc.id,
+    ...rentalDoc.data()
+  }));
+};
+
 const getFutureRentals = async () => {
   const thursDates = [1, 2, 3]; //days of the week where Thursday will be the next rental
   const monDates = [0, 4, 5, 6]; //days of the week where Monday will be the next rental
