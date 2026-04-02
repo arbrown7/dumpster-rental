@@ -302,8 +302,7 @@ const getFutureRentals = async (sort, order) => {
     
     q = query(
       rentalsCol,
-      where('deliveryDate', '<=', futureRental),
-      where('pickupDate', '>', futureRental),
+      where('deliveryDate', '==', futureRental),
       where('paid', '==', true)
     );
   } else if (monDates.includes(currDay)) {
@@ -314,8 +313,7 @@ const getFutureRentals = async (sort, order) => {
 
     q = query(
       rentalsCol,
-      where('deliveryDate', '<=', futureRental),
-      where('pickupDate', '>', futureRental),
+      where('deliveryDate', '==', futureRental),
       where('paid', '==', true)
     );
   }
