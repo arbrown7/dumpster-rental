@@ -35,9 +35,7 @@
 
   <%# Rentals Table %>
   <% } else { %>
-    <% if (typeof enableRowSearch !== 'undefined' && enableRowSearch) { %>
-      <input type="text" id="rentalSearch" class="form-control mb-3" placeholder="Search by name or address..." />
-    <% } %>
+    <input type="text" id="rentalSearch" class="form-control mb-3" placeholder="Search by name or address..." />
     <div class="card shadow-sm border-0">
       <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -149,7 +147,7 @@
                   <%
                     const statusMap = {
                       pending:   { cls: 'warning',   icon: 'clock',         label: 'Pending' },
-                      active:    { cls: 'primary',   icon: 'play-circle',   label: 'Paid' },
+                      active:    { cls: 'primary',   icon: 'play-circle',   label: 'Active' },
                       completed: { cls: 'success',   icon: 'check-circle',  label: 'Completed' },
                       cancelled: { cls: 'danger',    icon: 'x-circle',      label: 'Cancelled' }
                     };
