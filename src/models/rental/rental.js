@@ -55,7 +55,8 @@ const createRental = async ({
 };
 
 const getCurrentRentals = async (sort = 'delivery', order = 'asc') => {
-  const today = new Date().toISOString().split('T')[0]; // "2026-03-21"
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
   const sortBy =
     sort === 'name' ? 'name' :
@@ -65,7 +66,19 @@ const getCurrentRentals = async (sort = 'delivery', order = 'asc') => {
   const sortOrder = 
     order === 'asc' ? 'asc' : 'desc';
 
-  //do not include rentals where today is their pickup date
+  //update status of active rentals
+  const active = query(
+    rentalsCol,
+    where('deliveryDate', '<=', today),
+    where('pickupDate', '>', today),
+    where('paid', '==', true),
+  );
+
+  const activeSnapshot = await getDocs(active);
+  const batch = writeBatch(db);
+  activeSnapshot.forEach(doc => batch.update(doc.ref, { status: "active" }));
+  await batch.commit();
+  
   const q = query(
     rentalsCol,
     where('deliveryDate', '<=', today),
@@ -265,7 +278,7 @@ const checkHistory = async (userId) => {
   }));
 };
 
-const getFutureRentals = async () => {
+const getFutureRentals = async (sort, order) => {
   const thursDates = [1, 2, 3]; //days of the week where Thursday will be the next rental
   const monDates = [0, 4, 5, 6]; //days of the week where Monday will be the next rental
   const today = new Date();
@@ -283,9 +296,9 @@ const getFutureRentals = async () => {
 
   if(thursDates.includes(currDay)) {
     let timeToNextRental = 4 - currDay;
-    let futureRental = new Date();
-    futureRental.setDate(today.getDate() + timeToNextRental);
-    futureRental = futureRental.toISOString().split('T')[0];
+    let futureRentalDate = new Date();
+    futureRentalDate.setDate(today.getDate() + timeToNextRental);
+    let futureRental = `${futureRentalDate.getFullYear()}-${String(futureRentalDate.getMonth() + 1).padStart(2, '0')}-${String(futureRentalDate.getDate()).padStart(2, '0')}`;
     
     q = query(
       rentalsCol,
@@ -295,9 +308,9 @@ const getFutureRentals = async () => {
     );
   } else if (monDates.includes(currDay)) {
     let timeToNextRental = (1 - currDay + 7) % 7;
-    let futureRental = new Date();
-    futureRental.setDate(today.getDate() + timeToNextRental);
-    futureRental = futureRental.toISOString().split('T')[0];
+    let futureRentalDate = new Date();
+    futureRentalDate.setDate(today.getDate() + timeToNextRental);
+    let futureRental = `${futureRentalDate.getFullYear()}-${String(futureRentalDate.getMonth() + 1).padStart(2, '0')}-${String(futureRentalDate.getDate()).padStart(2, '0')}`;
 
     q = query(
       rentalsCol,
